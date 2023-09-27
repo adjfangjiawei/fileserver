@@ -1,25 +1,40 @@
+#include <BookServer/book.h>
 #include <spdlog/spdlog.h>
+#include <utils/util.h>
 
-#include "../Public/book.h"
-#include "sql/book-odb.hxx"
-
-const char* CreateBook(database db, std::string bookName, unsigned long authorID, unsigned long publishHomeID) {
-    // 创建一个作者的Neo4j的节点
-    unsigned long authorId = 0;
-
-    // 创建一个出版社的Neo4j的节点
-    unsigned long publishHomeId = 0;
+#include <BookServer/db/book-odb.hxx>
+#include <BookServer/jb/book.hxx>
+#include <string>
+using namespace std::literals::string_literals;
+JbBook* CreateBook(database db, JbBook* req) {
+    auto requestID = utils::GetRequestID();
+    spdlog::logger logfield{"bookserver::CreateBook "s + std::to_string(requestID)};
+    logfield.info("CreateBook enter,requestID {}", requestID);
 
     // 创建一本书的数据库记录
-    Book book{.name = bookName};
+    dbBook book{
+        .name = req->display_name,
+        .issn = req->issn,
+        .isbn = req->isbn,
+        .chinese_category_big = static_cast<dbBook::ChineseBigCategory>(req->chinese_category_big),
+        .chinese_category_specific = static_cast<dbBook::ChineseCategorySpecific>(req->chinese_category_specific),
+    };
+
     try {
         transaction t(db->begin());
         auto bookId = db->persist(book);
         t.commit();
     } catch (std::exception& e) {
-        spdlog::error("failed to create book ,because of db error:{}", e.what());
-        return e.what();
+        logfield.error("failed to create book ,because of db error:{}", e.what());
+        return nullptr;
     }
+
+    //
+    unsigned long authorId = 0;
+    return nullptr;
+
+    // // 创建一个出版社的Neo4j的节点
+    // unsigned long publishHomeId = 0;
 
     // 创建Neo4j中的一本书的节点
 
@@ -32,10 +47,24 @@ const char* CreateBook(database db, std::string bookName, unsigned long authorID
     // 解析封面
 
     // 开始书的解析过程
+    // return nullptr;
 }
 
+JbBook* GetBook(database db, JbGetBookRequest* req) {
+    spdlog::logger logfield{"bookserver::GetBook"};
+    logfield.info("GetBook enter");
+    auto id = utils::BookGetIDFromName(req->book_name.c_str());
+    if (id == 0) {
+        logfield.info("CreateBook failed");
+        return nullptr;
+    }
+    return nullptr;
+}
+
+// 创建作者
+JbAuthor* CreateAuthor(database db, JbAuthor* req) {}
 // 批量创建书
-const char* BatchCreateBook() {}
+// const char* BatchCreateBook() {}
 
 // void AnalysisBook() {
 //     // 使用ICU分词

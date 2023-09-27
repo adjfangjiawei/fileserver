@@ -8,3 +8,10 @@
 /cmake_install.cmake
 /cxx_modules_rules_clang.cmake
 /temp.txt
+/.vscode
+main
+/test/CMakeFiles
+/test/CMakeCache.txt
+.ninja_deps
+.ninja_log
+test/cmake_install.cmake

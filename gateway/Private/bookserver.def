@@ -1,0 +1,48 @@
+case "/bookserver/createbook"_hash:
+    {
+        spdlog::info("createbook");
+        JbBook reqtmp;
+        try {
+            auto reqtmp = request.get<JbBook>();
+            CreateBook(db, &reqtmp);
+        } catch (std::exception& e) {
+            spdlog::info("{}", e.what());
+        }
+        break;
+    }
+
+case "/bookserver/getbook"_hash:
+    {
+        spdlog::info("getbook");
+        JbGetBookRequest reqtmp;
+        try {
+            auto reqtmp = request.get<JbGetBookRequest>();
+            GetBook(db, &reqtmp);
+        } catch (std::exception& e) {
+            spdlog::info("{}", e.what());
+        }
+        break;
+    }
+
+case "/bookserver/createauthor"_hash:
+    {
+        spdlog::info("createauthor");
+        JbAuthor reqtmp;
+        try {
+            auto reqtmp = request.get<JbAuthor>();
+            CreateAuthor(db, &reqtmp);
+        } catch (std::exception& e) {
+            spdlog::info("{}", e.what());
+        }
+        break;
+    }
+
+    // case "/bookserver/getauthor"_hash:
+    //     {
+    //         spdlog::info("getauthor");
+    //         JbGetAuthorRequest reqtmp;
+    //         try {
+    //             auto reqtmp = request.get<JbGetAuthorRequest>();
+    //             GetAuthor(db, &reqtmp);
+    //         }
+    //     }
