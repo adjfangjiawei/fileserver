@@ -62,7 +62,25 @@ JbBook* GetBook(database db, JbGetBookRequest* req) {
 }
 
 // 创建作者
-JbAuthor* CreateAuthor(database db, JbAuthor* req) {}
+JbAuthor* CreateAuthor(database db, JbAuthor* req) {
+    spdlog::logger logfield{"bookserver::CreateAuthor"};
+    logfield.info("CreateAuthor enter");
+    auto id = utils::BookGetIDFromName(req -.c_str());
+    if (req->display_name.length() == 0) {
+        logfield.info("author need a name");
+        return nullptr;
+    }
+    dbAuthor author{.name = req->display_name,
+                    .birth_date = req->birth_date,
+                    .birth_country = req->birth_country,
+                    .birth_place_detail = req->birth_place_detail,
+                    .death_date = req->death_date,
+                    .gender = static_cast<dbAuthor::Gender>(req->gender)};
+    try {
+        transaction tx(db->begin());
+    } catch (std::exception& e) {
+    }
+}
 // 批量创建书
 // const char* BatchCreateBook() {}
 
