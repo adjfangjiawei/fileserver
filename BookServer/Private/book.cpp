@@ -79,6 +79,8 @@ JbAuthor* CreateAuthor(database db, JbAuthor* req) {
     try {
         transaction tx(db->begin());
     } catch (std::exception& e) {
+        logfield.info("CreateAuthor failed");
+        return nullptr;
     }
 }
 // 批量创建书

@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/aws-sdk/Public",
+                "${workspaceFolder}/BookServer/Public",
+                "${workspaceFolder}/gateway/Public",
+                "${workspaceFolder}/util/Public",
+                "/linux/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang++",
+            "cStandard": "c11",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "linux-clang-x64",
+            "compilerArgs": ["-fmodules"]
+        }
+    ],
+    "version": 4
+}
