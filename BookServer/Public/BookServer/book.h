@@ -20,7 +20,7 @@ extern JbBook* CreateBook(database db, JbBook* req);
 extern JbBook* GetBook(database db, JbGetBookRequest* req);
 
 // 创建作者
-extern JbAuthor* CreateAuthor(database db, JbAuthor* req);
+extern std::shared_ptr<JbAuthor> CreateAuthor(database db, JbAuthor* req);
 
 // // 设置软件的语言
 // void setLanguage();

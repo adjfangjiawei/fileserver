@@ -1,6 +1,8 @@
 
 #include <unicode/ustring.h>
+#include <utils/util.h>
 
+#include <BookServer/jb/book.hxx>
 #include <odb/core.hxx>
 #include <string>
 // 书籍
@@ -64,4 +66,14 @@ class dbAuthor {
         Female,
     };
     Gender gender;
+    auto ToPb() {
+        auto author = new JbAuthor{.name = utils::AuthorGetNameFromID(id_),
+                                   .display_name = name,
+                                   .birth_date = birth_date,
+                                   .birth_country = birth_country,
+                                   .birth_place_detail = birth_place_detail,
+                                   .death_date = death_date,
+                                   .gender = gender == Gender::Male ? JbAuthor::Gender::Male : JbAuthor::Gender::Female};
+        return std::shared_ptr<JbAuthor>(author);
+    }
 };

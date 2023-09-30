@@ -3,6 +3,7 @@
 #include <utils/util.h>
 
 #include <BookServer/db/book-odb.hxx>
+#include <BookServer/db/nbook.hxx>
 #include <BookServer/jb/book.hxx>
 #include <string>
 using namespace std::literals::string_literals;
@@ -62,14 +63,16 @@ JbBook* GetBook(database db, JbGetBookRequest* req) {
 }
 
 // 创建作者
-JbAuthor* CreateAuthor(database db, JbAuthor* req) {
+std::shared_ptr<JbAuthor> CreateAuthor(database db, JbAuthor* req) {
     spdlog::logger logfield{"bookserver::CreateAuthor"};
     logfield.info("CreateAuthor enter");
-    auto id = utils::BookGetIDFromName(req -.c_str());
+    // 校验输入
     if (req->display_name.length() == 0) {
         logfield.info("author need a name");
         return nullptr;
     }
+
+    // 在mysql数据库中创建指定的作者
     dbAuthor author{.name = req->display_name,
                     .birth_date = req->birth_date,
                     .birth_country = req->birth_country,
@@ -82,6 +85,11 @@ JbAuthor* CreateAuthor(database db, JbAuthor* req) {
         logfield.info("CreateAuthor failed");
         return nullptr;
     }
+
+    // 在Neo4j中创建一个作者节点
+    NbBook nBook{.ID = author.id_};
+
+    return author.ToPb();
 }
 // 批量创建书
 // const char* BatchCreateBook() {}

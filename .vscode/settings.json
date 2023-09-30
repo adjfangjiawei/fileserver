@@ -84,6 +84,14 @@
         "utility": "cpp",
         "ranges": "cpp",
         "stop_token": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "typeindex": "cpp",
+        "csignal": "cpp",
+        "any": "cpp",
+        "strstream": "cpp",
+        "coroutine": "cpp",
+        "source_location": "cpp",
+        "span": "cpp",
+        "valarray": "cpp"
     }
 }

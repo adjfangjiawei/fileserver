@@ -1,3 +1,7 @@
+#ifndef UTIL_COMPRESS
+#define UTIL_COMPRESS
+
 #include <zlib.h>
-void zipfile() {}
-void tarfile() {}
+extern void zipfile();
+extern void tarfile();
+#endif
