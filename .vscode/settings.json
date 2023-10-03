@@ -92,6 +92,8 @@
         "coroutine": "cpp",
         "source_location": "cpp",
         "span": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "*.ixx": "cpp",
+        "*.ipp": "cpp"
     }
 }

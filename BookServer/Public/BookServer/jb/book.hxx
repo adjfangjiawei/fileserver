@@ -41,6 +41,8 @@ class JbBook {
 
     // 书籍状态
     enum class BookStatus : unsigned char {
+        // 未知,
+        UNKNOWN,
         // 撰写中
         WRTING,
         // 撰写完毕，待发行

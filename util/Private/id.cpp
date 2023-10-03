@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <snowflake.hpp>
 namespace utils {
     std::string_view bookReg = "(books)/([0-9]+)";
     std::string_view AuthorReg = "(authors)/([0-9]+)";
@@ -55,4 +56,10 @@ namespace utils {
         sprintf(buff, "authors/%d", id);
         return buff;
     }
+
+    snowflake_t InitSnowFlakeID() {
+        snowflake_t uuid;
+        uuid.init(1, 1);
+    }
+
 }  // namespace utils

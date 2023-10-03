@@ -4,4 +4,5 @@
 #include "encode.h"
 #include "filesystem.h"
 #include "formattransform.h"
+#include "global.h"
 #include "id.h"

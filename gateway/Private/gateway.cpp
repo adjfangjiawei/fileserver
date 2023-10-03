@@ -1,6 +1,7 @@
 
 #include <BookServer/book.h>
 #include <gateway/gateway.h>
+#include <libconfig.h>
 #include <spdlog/spdlog.h>
 
 #include <BookServer/jb/book.hxx>
@@ -135,7 +136,7 @@ constexpr unsigned long long operator"" _hash(char const* p, size_t)
 
 // 对一个给定的请求给予反馈
 template <class Body, class Allcator>
-http::message_generator handle_request(beast::string_view doc_root, http::request<Body, http::basic_fields<Allcator>>&& req) {
+http::message_generator handle_request(beast::string_view doc_root, http::request<Body, http::basic_fields<Allcator>>&& req, config_t config) {
     // 返回一个错误请求的回复
     auto const bad_request = [&req](beast::string_view why) {
         http::response<http::string_body> res{http::status::bad_request, req.version()};
@@ -178,7 +179,17 @@ http::message_generator handle_request(beast::string_view doc_root, http::reques
     spdlog::info("{}", req.body());
     nlohmann::json request = nlohmann::json::parse(req.body());
     nlohmann::json response;
-    database db(new odb::mysql::database("root", "123456", "odb_test", "198.1.17.252", 30306));
+    int mysql_port = 0;
+    config_lookup_int(&config, "mysql.port", &mysql_port);
+    const char* mysql_host = new char[30];
+    config_lookup_string(&config, "mysql.host", &(mysql_host));
+    const char* mysql_user = new char[30];
+    config_lookup_string(&config, "mysql.user", &(mysql_user));
+    const char* mysql_password = new char[30];
+    config_lookup_string(&config, "mysql.password", &(mysql_password));
+    const char* mysql_database = new char[30];
+    config_lookup_string(&config, "mysql.database", &(mysql_database));
+    database db(new odb::mysql::database(mysql_user, mysql_password, mysql_database, mysql_host, mysql_port));
     switch (hash_(url_target.c_str())) {
 #include "bookserver.def"
         default:
@@ -234,7 +245,7 @@ http::message_generator handle_request(beast::string_view doc_root, http::reques
 }
 
 // 处理一个http服务器的连接
-net::awaitable<void> do_session(tcp_stream stream, std::shared_ptr<std::string const> doc_root) {
+net::awaitable<void> do_session(tcp_stream stream, std::shared_ptr<std::string const> doc_root, config_t config) {
     // 这个缓冲区有避免交替读
     beast::flat_buffer buffer;
 
@@ -249,7 +260,7 @@ net::awaitable<void> do_session(tcp_stream stream, std::shared_ptr<std::string c
             co_await http::async_read(stream, buffer, req);
 
             // 处理请求
-            http::message_generator msg = handle_request(*doc_root, std::move(req));
+            http::message_generator msg = handle_request(*doc_root, std::move(req), config);
 
             // 保活
             bool keep_alive = msg.keep_alive();
@@ -274,7 +285,7 @@ net::awaitable<void> do_session(tcp_stream stream, std::shared_ptr<std::string c
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 // 接收一个进入的连接并且启动会话
-net::awaitable<void> do_listen(tcp::endpoint endpoint, std::shared_ptr<std::string const> doc_root) {
+net::awaitable<void> do_listen(tcp::endpoint endpoint, std::shared_ptr<std::string const> doc_root, config_t config) {
     // 打开一个接收器
     auto acceptor = net::use_awaitable.as_default_on(tcp::acceptor(co_await net::this_coro::executor));
     acceptor.open(endpoint.protocol());
@@ -289,7 +300,7 @@ net::awaitable<void> do_listen(tcp::endpoint endpoint, std::shared_ptr<std::stri
     acceptor.listen(net::socket_base::max_listen_connections);
 
     for (;;) {
-        boost::asio::co_spawn(acceptor.get_executor(), do_session(tcp_stream(co_await acceptor.async_accept()), doc_root), [](std::exception_ptr e) {
+        boost::asio::co_spawn(acceptor.get_executor(), do_session(tcp_stream(co_await acceptor.async_accept()), doc_root, config), [](std::exception_ptr e) {
             if (e) {
                 try {
                     std::rethrow_exception(e);
@@ -314,8 +325,11 @@ void gateway::initGateway() {
     // 创建io_context
     net::io_context ioc{1};
 
+    // 设置config文件
+    config_t config = this->config;
+
     // 生成一个监听
-    boost::asio::co_spawn(ioc, do_listen(tcp::endpoint{address, port}, doc_root), [](std::exception_ptr e) {
+    boost::asio::co_spawn(ioc, do_listen(tcp::endpoint{address, port}, doc_root, config), [](std::exception_ptr e) {
         if (e) {
             try {
                 std::rethrow_exception(e);

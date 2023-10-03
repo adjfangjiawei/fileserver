@@ -37,12 +37,22 @@ class dbBook {
 #pragma db index
     // 分类代码,采用中国图书分类法,采用具体分类
     ChineseCategorySpecific chinese_category_specific;
+    auto ToPb() {
+        auto book = new JbBook{.name = utils::BookGetNameFromID(id_),
+                               .display_name = name,
+                               .issn = issn,
+                               .isbn = isbn,
+                               .chinese_category_big = static_cast<JbBook::ChineseBigCategory>(chinese_category_big),
+                               .chinese_category_specific = static_cast<JbBook::ChineseCategorySpecific>(chinese_category_specific)};
+        return std::shared_ptr<JbBook>(book);
+    }
 };
 
 // 作者
 #pragma db object
 class dbAuthor {
   public:
+    friend class odb::access;
 #pragma db id auto
 #pragma db index
     unsigned long id_;
@@ -59,7 +69,7 @@ class dbAuthor {
     // 作者性别
     enum class Gender : unsigned char {
         // 未知性别
-        Unknown,
+        Unknown = 1,
         // 男性
         Male,
         // 女性
@@ -76,4 +86,24 @@ class dbAuthor {
                                    .gender = gender == Gender::Male ? JbAuthor::Gender::Male : JbAuthor::Gender::Female};
         return std::shared_ptr<JbAuthor>(author);
     }
+};
+
+// 出版社
+#pragma db object
+class dbPublisher {
+  public:
+    friend class odb::access;
+#pragma db id auto
+#pragma db index
+    unsigned long id_;
+    // 出版社名
+    std::string name;
+    // 出版社地址
+    std::string address;
+    // 出版社电话
+    std::string phone;
+    // 出版社网址
+    std::string url;
+    // 出版社简介
+    std::string intro;
 };

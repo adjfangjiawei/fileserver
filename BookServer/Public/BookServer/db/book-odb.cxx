@@ -850,6 +850,1816 @@ namespace odb
 
     return st.execute ();
   }
+
+  // dbAuthor
+  //
+
+  struct access::object_traits_impl< ::dbAuthor, id_mysql >::extra_statement_cache_type
+  {
+    extra_statement_cache_type (
+      mysql::connection&,
+      image_type&,
+      id_image_type&,
+      mysql::binding&,
+      mysql::binding&)
+    {
+    }
+  };
+
+  access::object_traits_impl< ::dbAuthor, id_mysql >::id_type
+  access::object_traits_impl< ::dbAuthor, id_mysql >::
+  id (const id_image_type& i)
+  {
+    mysql::database* db (0);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    id_type id;
+    {
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_value (
+        id,
+        i.id_value,
+        i.id_null);
+    }
+
+    return id;
+  }
+
+  access::object_traits_impl< ::dbAuthor, id_mysql >::id_type
+  access::object_traits_impl< ::dbAuthor, id_mysql >::
+  id (const image_type& i)
+  {
+    mysql::database* db (0);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    id_type id;
+    {
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_value (
+        id,
+        i.id_value,
+        i.id_null);
+    }
+
+    return id;
+  }
+
+  bool access::object_traits_impl< ::dbAuthor, id_mysql >::
+  grow (image_type& i,
+        my_bool* t)
+  {
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (t);
+
+    bool grew (false);
+
+    // id_
+    //
+    t[0UL] = 0;
+
+    // name
+    //
+    if (t[1UL])
+    {
+      i.name_value.capacity (i.name_size);
+      grew = true;
+    }
+
+    // birth_date
+    //
+    if (t[2UL])
+    {
+      i.birth_date_value.capacity (i.birth_date_size);
+      grew = true;
+    }
+
+    // birth_country
+    //
+    if (t[3UL])
+    {
+      i.birth_country_value.capacity (i.birth_country_size);
+      grew = true;
+    }
+
+    // birth_place_detail
+    //
+    if (t[4UL])
+    {
+      i.birth_place_detail_value.capacity (i.birth_place_detail_size);
+      grew = true;
+    }
+
+    // death_date
+    //
+    if (t[5UL])
+    {
+      i.death_date_value.capacity (i.death_date_size);
+      grew = true;
+    }
+
+    // gender
+    //
+    t[6UL] = 0;
+
+    return grew;
+  }
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  bind (MYSQL_BIND* b,
+        image_type& i,
+        mysql::statement_kind sk)
+  {
+    ODB_POTENTIALLY_UNUSED (sk);
+
+    using namespace mysql;
+
+    std::size_t n (0);
+
+    // id_
+    //
+    if (sk != statement_update)
+    {
+      b[n].buffer_type = MYSQL_TYPE_LONGLONG;
+      b[n].is_unsigned = 1;
+      b[n].buffer = &i.id_value;
+      b[n].is_null = &i.id_null;
+      n++;
+    }
+
+    // name
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.name_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.name_value.capacity ());
+    b[n].length = &i.name_size;
+    b[n].is_null = &i.name_null;
+    n++;
+
+    // birth_date
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.birth_date_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.birth_date_value.capacity ());
+    b[n].length = &i.birth_date_size;
+    b[n].is_null = &i.birth_date_null;
+    n++;
+
+    // birth_country
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.birth_country_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.birth_country_value.capacity ());
+    b[n].length = &i.birth_country_size;
+    b[n].is_null = &i.birth_country_null;
+    n++;
+
+    // birth_place_detail
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.birth_place_detail_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.birth_place_detail_value.capacity ());
+    b[n].length = &i.birth_place_detail_size;
+    b[n].is_null = &i.birth_place_detail_null;
+    n++;
+
+    // death_date
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.death_date_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.death_date_value.capacity ());
+    b[n].length = &i.death_date_size;
+    b[n].is_null = &i.death_date_null;
+    n++;
+
+    // gender
+    //
+    b[n].buffer_type = MYSQL_TYPE_TINY;
+    b[n].is_unsigned = 1;
+    b[n].buffer = &i.gender_value;
+    b[n].is_null = &i.gender_null;
+    n++;
+  }
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  bind (MYSQL_BIND* b, id_image_type& i)
+  {
+    std::size_t n (0);
+    b[n].buffer_type = MYSQL_TYPE_LONGLONG;
+    b[n].is_unsigned = 1;
+    b[n].buffer = &i.id_value;
+    b[n].is_null = &i.id_null;
+  }
+
+  bool access::object_traits_impl< ::dbAuthor, id_mysql >::
+  init (image_type& i,
+        const object_type& o,
+        mysql::statement_kind sk)
+  {
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (o);
+    ODB_POTENTIALLY_UNUSED (sk);
+
+    using namespace mysql;
+
+    bool grew (false);
+
+    // id_
+    //
+    if (sk == statement_insert)
+    {
+      long unsigned int const& v =
+        o.id_;
+
+      bool is_null (false);
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_image (
+        i.id_value, is_null, v);
+      i.id_null = is_null;
+    }
+
+    // name
+    //
+    {
+      ::std::string const& v =
+        o.name;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.name_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.name_value,
+        size,
+        is_null,
+        v);
+      i.name_null = is_null;
+      i.name_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.name_value.capacity ());
+    }
+
+    // birth_date
+    //
+    {
+      ::std::string const& v =
+        o.birth_date;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.birth_date_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.birth_date_value,
+        size,
+        is_null,
+        v);
+      i.birth_date_null = is_null;
+      i.birth_date_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.birth_date_value.capacity ());
+    }
+
+    // birth_country
+    //
+    {
+      ::std::string const& v =
+        o.birth_country;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.birth_country_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.birth_country_value,
+        size,
+        is_null,
+        v);
+      i.birth_country_null = is_null;
+      i.birth_country_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.birth_country_value.capacity ());
+    }
+
+    // birth_place_detail
+    //
+    {
+      ::std::string const& v =
+        o.birth_place_detail;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.birth_place_detail_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.birth_place_detail_value,
+        size,
+        is_null,
+        v);
+      i.birth_place_detail_null = is_null;
+      i.birth_place_detail_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.birth_place_detail_value.capacity ());
+    }
+
+    // death_date
+    //
+    {
+      ::std::string const& v =
+        o.death_date;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.death_date_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.death_date_value,
+        size,
+        is_null,
+        v);
+      i.death_date_null = is_null;
+      i.death_date_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.death_date_value.capacity ());
+    }
+
+    // gender
+    //
+    {
+      ::dbAuthor::Gender const& v =
+        o.gender;
+
+      bool is_null (false);
+      mysql::value_traits<
+          ::dbAuthor::Gender,
+          mysql::id_utiny >::set_image (
+        i.gender_value, is_null, v);
+      i.gender_null = is_null;
+    }
+
+    return grew;
+  }
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  init (object_type& o,
+        const image_type& i,
+        database* db)
+  {
+    ODB_POTENTIALLY_UNUSED (o);
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    // id_
+    //
+    {
+      long unsigned int& v =
+        o.id_;
+
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_value (
+        v,
+        i.id_value,
+        i.id_null);
+    }
+
+    // name
+    //
+    {
+      ::std::string& v =
+        o.name;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.name_value,
+        i.name_size,
+        i.name_null);
+    }
+
+    // birth_date
+    //
+    {
+      ::std::string& v =
+        o.birth_date;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.birth_date_value,
+        i.birth_date_size,
+        i.birth_date_null);
+    }
+
+    // birth_country
+    //
+    {
+      ::std::string& v =
+        o.birth_country;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.birth_country_value,
+        i.birth_country_size,
+        i.birth_country_null);
+    }
+
+    // birth_place_detail
+    //
+    {
+      ::std::string& v =
+        o.birth_place_detail;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.birth_place_detail_value,
+        i.birth_place_detail_size,
+        i.birth_place_detail_null);
+    }
+
+    // death_date
+    //
+    {
+      ::std::string& v =
+        o.death_date;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.death_date_value,
+        i.death_date_size,
+        i.death_date_null);
+    }
+
+    // gender
+    //
+    {
+      ::dbAuthor::Gender& v =
+        o.gender;
+
+      mysql::value_traits<
+          ::dbAuthor::Gender,
+          mysql::id_utiny >::set_value (
+        v,
+        i.gender_value,
+        i.gender_null);
+    }
+  }
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  init (id_image_type& i, const id_type& id)
+  {
+    {
+      bool is_null (false);
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_image (
+        i.id_value, is_null, id);
+      i.id_null = is_null;
+    }
+  }
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::persist_statement[] =
+  "INSERT INTO `dbAuthor` "
+  "(`id`, "
+  "`name`, "
+  "`birth_date`, "
+  "`birth_country`, "
+  "`birth_place_detail`, "
+  "`death_date`, "
+  "`gender`) "
+  "VALUES "
+  "(?, ?, ?, ?, ?, ?, ?)";
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::find_statement[] =
+  "SELECT "
+  "`dbAuthor`.`id`, "
+  "`dbAuthor`.`name`, "
+  "`dbAuthor`.`birth_date`, "
+  "`dbAuthor`.`birth_country`, "
+  "`dbAuthor`.`birth_place_detail`, "
+  "`dbAuthor`.`death_date`, "
+  "`dbAuthor`.`gender` "
+  "FROM `dbAuthor` "
+  "WHERE `dbAuthor`.`id`=?";
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::update_statement[] =
+  "UPDATE `dbAuthor` "
+  "SET "
+  "`name`=?, "
+  "`birth_date`=?, "
+  "`birth_country`=?, "
+  "`birth_place_detail`=?, "
+  "`death_date`=?, "
+  "`gender`=? "
+  "WHERE `id`=?";
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::erase_statement[] =
+  "DELETE FROM `dbAuthor` "
+  "WHERE `id`=?";
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::query_statement[] =
+  "SELECT "
+  "`dbAuthor`.`id`, "
+  "`dbAuthor`.`name`, "
+  "`dbAuthor`.`birth_date`, "
+  "`dbAuthor`.`birth_country`, "
+  "`dbAuthor`.`birth_place_detail`, "
+  "`dbAuthor`.`death_date`, "
+  "`dbAuthor`.`gender` "
+  "FROM `dbAuthor`";
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::erase_query_statement[] =
+  "DELETE FROM `dbAuthor`";
+
+  const char access::object_traits_impl< ::dbAuthor, id_mysql >::table_name[] =
+  "`dbAuthor`";
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  persist (database& db, object_type& obj)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    callback (db,
+              static_cast<const object_type&> (obj),
+              callback_event::pre_persist);
+
+    image_type& im (sts.image ());
+    binding& imb (sts.insert_image_binding ());
+
+    if (init (im, obj, statement_insert))
+      im.version++;
+
+    im.id_value = 0;
+
+    if (im.version != sts.insert_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_insert);
+      sts.insert_image_version (im.version);
+      imb.version++;
+    }
+
+    {
+      id_image_type& i (sts.id_image ());
+      binding& b (sts.id_image_binding ());
+      if (i.version != sts.id_image_version () || b.version == 0)
+      {
+        bind (b.bind, i);
+        sts.id_image_version (i.version);
+        b.version++;
+      }
+    }
+
+    insert_statement& st (sts.persist_statement ());
+    if (!st.execute ())
+      throw object_already_persistent ();
+
+    obj.id_ = id (sts.id_image ());
+
+    callback (db,
+              static_cast<const object_type&> (obj),
+              callback_event::post_persist);
+  }
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  update (database& db, const object_type& obj)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+
+    using namespace mysql;
+    using mysql::update_statement;
+
+    callback (db, obj, callback_event::pre_update);
+
+    mysql::transaction& tr (mysql::transaction::current ());
+    mysql::connection& conn (tr.connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    const id_type& id (
+      obj.id_);
+    id_image_type& idi (sts.id_image ());
+    init (idi, id);
+
+    image_type& im (sts.image ());
+    if (init (im, obj, statement_update))
+      im.version++;
+
+    bool u (false);
+    binding& imb (sts.update_image_binding ());
+    if (im.version != sts.update_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_update);
+      sts.update_image_version (im.version);
+      imb.version++;
+      u = true;
+    }
+
+    binding& idb (sts.id_image_binding ());
+    if (idi.version != sts.update_id_image_version () ||
+        idb.version == 0)
+    {
+      if (idi.version != sts.id_image_version () ||
+          idb.version == 0)
+      {
+        bind (idb.bind, idi);
+        sts.id_image_version (idi.version);
+        idb.version++;
+      }
+
+      sts.update_id_image_version (idi.version);
+
+      if (!u)
+        imb.version++;
+    }
+
+    update_statement& st (sts.update_statement ());
+    if (st.execute () == 0)
+      throw object_not_persistent ();
+
+    callback (db, obj, callback_event::post_update);
+    pointer_cache_traits::update (db, obj);
+  }
+
+  void access::object_traits_impl< ::dbAuthor, id_mysql >::
+  erase (database& db, const id_type& id)
+  {
+    using namespace mysql;
+
+    ODB_POTENTIALLY_UNUSED (db);
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    id_image_type& i (sts.id_image ());
+    init (i, id);
+
+    binding& idb (sts.id_image_binding ());
+    if (i.version != sts.id_image_version () || idb.version == 0)
+    {
+      bind (idb.bind, i);
+      sts.id_image_version (i.version);
+      idb.version++;
+    }
+
+    if (sts.erase_statement ().execute () != 1)
+      throw object_not_persistent ();
+
+    pointer_cache_traits::erase (db, id);
+  }
+
+  access::object_traits_impl< ::dbAuthor, id_mysql >::pointer_type
+  access::object_traits_impl< ::dbAuthor, id_mysql >::
+  find (database& db, const id_type& id)
+  {
+    using namespace mysql;
+
+    {
+      pointer_type p (pointer_cache_traits::find (db, id));
+
+      if (!pointer_traits::null_ptr (p))
+        return p;
+    }
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    statements_type::auto_lock l (sts);
+
+    if (l.locked ())
+    {
+      if (!find_ (sts, &id))
+        return pointer_type ();
+    }
+
+    pointer_type p (
+      access::object_factory<object_type, pointer_type>::create ());
+    pointer_traits::guard pg (p);
+
+    pointer_cache_traits::insert_guard ig (
+      pointer_cache_traits::insert (db, id, p));
+
+    object_type& obj (pointer_traits::get_ref (p));
+
+    if (l.locked ())
+    {
+      select_statement& st (sts.find_statement ());
+      ODB_POTENTIALLY_UNUSED (st);
+
+      callback (db, obj, callback_event::pre_load);
+      init (obj, sts.image (), &db);
+      load_ (sts, obj, false);
+      sts.load_delayed (0);
+      l.unlock ();
+      callback (db, obj, callback_event::post_load);
+      pointer_cache_traits::load (ig.position ());
+    }
+    else
+      sts.delay_load (id, obj, ig.position ());
+
+    ig.release ();
+    pg.release ();
+    return p;
+  }
+
+  bool access::object_traits_impl< ::dbAuthor, id_mysql >::
+  find (database& db, const id_type& id, object_type& obj)
+  {
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    statements_type::auto_lock l (sts);
+
+    if (!find_ (sts, &id))
+      return false;
+
+    select_statement& st (sts.find_statement ());
+    ODB_POTENTIALLY_UNUSED (st);
+
+    reference_cache_traits::position_type pos (
+      reference_cache_traits::insert (db, id, obj));
+    reference_cache_traits::insert_guard ig (pos);
+
+    callback (db, obj, callback_event::pre_load);
+    init (obj, sts.image (), &db);
+    load_ (sts, obj, false);
+    sts.load_delayed (0);
+    l.unlock ();
+    callback (db, obj, callback_event::post_load);
+    reference_cache_traits::load (pos);
+    ig.release ();
+    return true;
+  }
+
+  bool access::object_traits_impl< ::dbAuthor, id_mysql >::
+  reload (database& db, object_type& obj)
+  {
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    statements_type::auto_lock l (sts);
+
+    const id_type& id  (
+      obj.id_);
+
+    if (!find_ (sts, &id))
+      return false;
+
+    select_statement& st (sts.find_statement ());
+    ODB_POTENTIALLY_UNUSED (st);
+
+    callback (db, obj, callback_event::pre_load);
+    init (obj, sts.image (), &db);
+    load_ (sts, obj, true);
+    sts.load_delayed (0);
+    l.unlock ();
+    callback (db, obj, callback_event::post_load);
+    return true;
+  }
+
+  bool access::object_traits_impl< ::dbAuthor, id_mysql >::
+  find_ (statements_type& sts,
+         const id_type* id)
+  {
+    using namespace mysql;
+
+    id_image_type& i (sts.id_image ());
+    init (i, *id);
+
+    binding& idb (sts.id_image_binding ());
+    if (i.version != sts.id_image_version () || idb.version == 0)
+    {
+      bind (idb.bind, i);
+      sts.id_image_version (i.version);
+      idb.version++;
+    }
+
+    image_type& im (sts.image ());
+    binding& imb (sts.select_image_binding ());
+
+    if (im.version != sts.select_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_select);
+      sts.select_image_version (im.version);
+      imb.version++;
+    }
+
+    select_statement& st (sts.find_statement ());
+
+    st.execute ();
+    auto_result ar (st);
+    select_statement::result r (st.fetch ());
+
+    if (r == select_statement::truncated)
+    {
+      if (grow (im, sts.select_image_truncated ()))
+        im.version++;
+
+      if (im.version != sts.select_image_version ())
+      {
+        bind (imb.bind, im, statement_select);
+        sts.select_image_version (im.version);
+        imb.version++;
+        st.refetch ();
+      }
+    }
+
+    return r != select_statement::no_data;
+  }
+
+  result< access::object_traits_impl< ::dbAuthor, id_mysql >::object_type >
+  access::object_traits_impl< ::dbAuthor, id_mysql >::
+  query (database&, const query_base_type& q)
+  {
+    using namespace mysql;
+    using odb::details::shared;
+    using odb::details::shared_ptr;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    image_type& im (sts.image ());
+    binding& imb (sts.select_image_binding ());
+
+    if (im.version != sts.select_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_select);
+      sts.select_image_version (im.version);
+      imb.version++;
+    }
+
+    std::string text (query_statement);
+    if (!q.empty ())
+    {
+      text += " ";
+      text += q.clause ();
+    }
+
+    q.init_parameters ();
+    shared_ptr<select_statement> st (
+      new (shared) select_statement (
+        conn,
+        text,
+        false,
+        true,
+        q.parameters_binding (),
+        imb));
+
+    st->execute ();
+
+    shared_ptr< odb::object_result_impl<object_type> > r (
+      new (shared) mysql::object_result_impl<object_type> (
+        q, st, sts, 0));
+
+    return result<object_type> (r);
+  }
+
+  unsigned long long access::object_traits_impl< ::dbAuthor, id_mysql >::
+  erase_query (database&, const query_base_type& q)
+  {
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+
+    std::string text (erase_query_statement);
+    if (!q.empty ())
+    {
+      text += ' ';
+      text += q.clause ();
+    }
+
+    q.init_parameters ();
+    delete_statement st (
+      conn,
+      text,
+      q.parameters_binding ());
+
+    return st.execute ();
+  }
+
+  // dbPublisher
+  //
+
+  struct access::object_traits_impl< ::dbPublisher, id_mysql >::extra_statement_cache_type
+  {
+    extra_statement_cache_type (
+      mysql::connection&,
+      image_type&,
+      id_image_type&,
+      mysql::binding&,
+      mysql::binding&)
+    {
+    }
+  };
+
+  access::object_traits_impl< ::dbPublisher, id_mysql >::id_type
+  access::object_traits_impl< ::dbPublisher, id_mysql >::
+  id (const id_image_type& i)
+  {
+    mysql::database* db (0);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    id_type id;
+    {
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_value (
+        id,
+        i.id_value,
+        i.id_null);
+    }
+
+    return id;
+  }
+
+  access::object_traits_impl< ::dbPublisher, id_mysql >::id_type
+  access::object_traits_impl< ::dbPublisher, id_mysql >::
+  id (const image_type& i)
+  {
+    mysql::database* db (0);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    id_type id;
+    {
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_value (
+        id,
+        i.id_value,
+        i.id_null);
+    }
+
+    return id;
+  }
+
+  bool access::object_traits_impl< ::dbPublisher, id_mysql >::
+  grow (image_type& i,
+        my_bool* t)
+  {
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (t);
+
+    bool grew (false);
+
+    // id_
+    //
+    t[0UL] = 0;
+
+    // name
+    //
+    if (t[1UL])
+    {
+      i.name_value.capacity (i.name_size);
+      grew = true;
+    }
+
+    // address
+    //
+    if (t[2UL])
+    {
+      i.address_value.capacity (i.address_size);
+      grew = true;
+    }
+
+    // phone
+    //
+    if (t[3UL])
+    {
+      i.phone_value.capacity (i.phone_size);
+      grew = true;
+    }
+
+    // url
+    //
+    if (t[4UL])
+    {
+      i.url_value.capacity (i.url_size);
+      grew = true;
+    }
+
+    // intro
+    //
+    if (t[5UL])
+    {
+      i.intro_value.capacity (i.intro_size);
+      grew = true;
+    }
+
+    return grew;
+  }
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  bind (MYSQL_BIND* b,
+        image_type& i,
+        mysql::statement_kind sk)
+  {
+    ODB_POTENTIALLY_UNUSED (sk);
+
+    using namespace mysql;
+
+    std::size_t n (0);
+
+    // id_
+    //
+    if (sk != statement_update)
+    {
+      b[n].buffer_type = MYSQL_TYPE_LONGLONG;
+      b[n].is_unsigned = 1;
+      b[n].buffer = &i.id_value;
+      b[n].is_null = &i.id_null;
+      n++;
+    }
+
+    // name
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.name_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.name_value.capacity ());
+    b[n].length = &i.name_size;
+    b[n].is_null = &i.name_null;
+    n++;
+
+    // address
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.address_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.address_value.capacity ());
+    b[n].length = &i.address_size;
+    b[n].is_null = &i.address_null;
+    n++;
+
+    // phone
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.phone_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.phone_value.capacity ());
+    b[n].length = &i.phone_size;
+    b[n].is_null = &i.phone_null;
+    n++;
+
+    // url
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.url_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.url_value.capacity ());
+    b[n].length = &i.url_size;
+    b[n].is_null = &i.url_null;
+    n++;
+
+    // intro
+    //
+    b[n].buffer_type = MYSQL_TYPE_STRING;
+    b[n].buffer = i.intro_value.data ();
+    b[n].buffer_length = static_cast<unsigned long> (
+      i.intro_value.capacity ());
+    b[n].length = &i.intro_size;
+    b[n].is_null = &i.intro_null;
+    n++;
+  }
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  bind (MYSQL_BIND* b, id_image_type& i)
+  {
+    std::size_t n (0);
+    b[n].buffer_type = MYSQL_TYPE_LONGLONG;
+    b[n].is_unsigned = 1;
+    b[n].buffer = &i.id_value;
+    b[n].is_null = &i.id_null;
+  }
+
+  bool access::object_traits_impl< ::dbPublisher, id_mysql >::
+  init (image_type& i,
+        const object_type& o,
+        mysql::statement_kind sk)
+  {
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (o);
+    ODB_POTENTIALLY_UNUSED (sk);
+
+    using namespace mysql;
+
+    bool grew (false);
+
+    // id_
+    //
+    if (sk == statement_insert)
+    {
+      long unsigned int const& v =
+        o.id_;
+
+      bool is_null (false);
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_image (
+        i.id_value, is_null, v);
+      i.id_null = is_null;
+    }
+
+    // name
+    //
+    {
+      ::std::string const& v =
+        o.name;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.name_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.name_value,
+        size,
+        is_null,
+        v);
+      i.name_null = is_null;
+      i.name_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.name_value.capacity ());
+    }
+
+    // address
+    //
+    {
+      ::std::string const& v =
+        o.address;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.address_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.address_value,
+        size,
+        is_null,
+        v);
+      i.address_null = is_null;
+      i.address_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.address_value.capacity ());
+    }
+
+    // phone
+    //
+    {
+      ::std::string const& v =
+        o.phone;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.phone_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.phone_value,
+        size,
+        is_null,
+        v);
+      i.phone_null = is_null;
+      i.phone_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.phone_value.capacity ());
+    }
+
+    // url
+    //
+    {
+      ::std::string const& v =
+        o.url;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.url_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.url_value,
+        size,
+        is_null,
+        v);
+      i.url_null = is_null;
+      i.url_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.url_value.capacity ());
+    }
+
+    // intro
+    //
+    {
+      ::std::string const& v =
+        o.intro;
+
+      bool is_null (false);
+      std::size_t size (0);
+      std::size_t cap (i.intro_value.capacity ());
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_image (
+        i.intro_value,
+        size,
+        is_null,
+        v);
+      i.intro_null = is_null;
+      i.intro_size = static_cast<unsigned long> (size);
+      grew = grew || (cap != i.intro_value.capacity ());
+    }
+
+    return grew;
+  }
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  init (object_type& o,
+        const image_type& i,
+        database* db)
+  {
+    ODB_POTENTIALLY_UNUSED (o);
+    ODB_POTENTIALLY_UNUSED (i);
+    ODB_POTENTIALLY_UNUSED (db);
+
+    // id_
+    //
+    {
+      long unsigned int& v =
+        o.id_;
+
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_value (
+        v,
+        i.id_value,
+        i.id_null);
+    }
+
+    // name
+    //
+    {
+      ::std::string& v =
+        o.name;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.name_value,
+        i.name_size,
+        i.name_null);
+    }
+
+    // address
+    //
+    {
+      ::std::string& v =
+        o.address;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.address_value,
+        i.address_size,
+        i.address_null);
+    }
+
+    // phone
+    //
+    {
+      ::std::string& v =
+        o.phone;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.phone_value,
+        i.phone_size,
+        i.phone_null);
+    }
+
+    // url
+    //
+    {
+      ::std::string& v =
+        o.url;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.url_value,
+        i.url_size,
+        i.url_null);
+    }
+
+    // intro
+    //
+    {
+      ::std::string& v =
+        o.intro;
+
+      mysql::value_traits<
+          ::std::string,
+          mysql::id_string >::set_value (
+        v,
+        i.intro_value,
+        i.intro_size,
+        i.intro_null);
+    }
+  }
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  init (id_image_type& i, const id_type& id)
+  {
+    {
+      bool is_null (false);
+      mysql::value_traits<
+          long unsigned int,
+          mysql::id_ulonglong >::set_image (
+        i.id_value, is_null, id);
+      i.id_null = is_null;
+    }
+  }
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::persist_statement[] =
+  "INSERT INTO `dbPublisher` "
+  "(`id`, "
+  "`name`, "
+  "`address`, "
+  "`phone`, "
+  "`url`, "
+  "`intro`) "
+  "VALUES "
+  "(?, ?, ?, ?, ?, ?)";
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::find_statement[] =
+  "SELECT "
+  "`dbPublisher`.`id`, "
+  "`dbPublisher`.`name`, "
+  "`dbPublisher`.`address`, "
+  "`dbPublisher`.`phone`, "
+  "`dbPublisher`.`url`, "
+  "`dbPublisher`.`intro` "
+  "FROM `dbPublisher` "
+  "WHERE `dbPublisher`.`id`=?";
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::update_statement[] =
+  "UPDATE `dbPublisher` "
+  "SET "
+  "`name`=?, "
+  "`address`=?, "
+  "`phone`=?, "
+  "`url`=?, "
+  "`intro`=? "
+  "WHERE `id`=?";
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::erase_statement[] =
+  "DELETE FROM `dbPublisher` "
+  "WHERE `id`=?";
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::query_statement[] =
+  "SELECT "
+  "`dbPublisher`.`id`, "
+  "`dbPublisher`.`name`, "
+  "`dbPublisher`.`address`, "
+  "`dbPublisher`.`phone`, "
+  "`dbPublisher`.`url`, "
+  "`dbPublisher`.`intro` "
+  "FROM `dbPublisher`";
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::erase_query_statement[] =
+  "DELETE FROM `dbPublisher`";
+
+  const char access::object_traits_impl< ::dbPublisher, id_mysql >::table_name[] =
+  "`dbPublisher`";
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  persist (database& db, object_type& obj)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    callback (db,
+              static_cast<const object_type&> (obj),
+              callback_event::pre_persist);
+
+    image_type& im (sts.image ());
+    binding& imb (sts.insert_image_binding ());
+
+    if (init (im, obj, statement_insert))
+      im.version++;
+
+    im.id_value = 0;
+
+    if (im.version != sts.insert_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_insert);
+      sts.insert_image_version (im.version);
+      imb.version++;
+    }
+
+    {
+      id_image_type& i (sts.id_image ());
+      binding& b (sts.id_image_binding ());
+      if (i.version != sts.id_image_version () || b.version == 0)
+      {
+        bind (b.bind, i);
+        sts.id_image_version (i.version);
+        b.version++;
+      }
+    }
+
+    insert_statement& st (sts.persist_statement ());
+    if (!st.execute ())
+      throw object_already_persistent ();
+
+    obj.id_ = id (sts.id_image ());
+
+    callback (db,
+              static_cast<const object_type&> (obj),
+              callback_event::post_persist);
+  }
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  update (database& db, const object_type& obj)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+
+    using namespace mysql;
+    using mysql::update_statement;
+
+    callback (db, obj, callback_event::pre_update);
+
+    mysql::transaction& tr (mysql::transaction::current ());
+    mysql::connection& conn (tr.connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    const id_type& id (
+      obj.id_);
+    id_image_type& idi (sts.id_image ());
+    init (idi, id);
+
+    image_type& im (sts.image ());
+    if (init (im, obj, statement_update))
+      im.version++;
+
+    bool u (false);
+    binding& imb (sts.update_image_binding ());
+    if (im.version != sts.update_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_update);
+      sts.update_image_version (im.version);
+      imb.version++;
+      u = true;
+    }
+
+    binding& idb (sts.id_image_binding ());
+    if (idi.version != sts.update_id_image_version () ||
+        idb.version == 0)
+    {
+      if (idi.version != sts.id_image_version () ||
+          idb.version == 0)
+      {
+        bind (idb.bind, idi);
+        sts.id_image_version (idi.version);
+        idb.version++;
+      }
+
+      sts.update_id_image_version (idi.version);
+
+      if (!u)
+        imb.version++;
+    }
+
+    update_statement& st (sts.update_statement ());
+    if (st.execute () == 0)
+      throw object_not_persistent ();
+
+    callback (db, obj, callback_event::post_update);
+    pointer_cache_traits::update (db, obj);
+  }
+
+  void access::object_traits_impl< ::dbPublisher, id_mysql >::
+  erase (database& db, const id_type& id)
+  {
+    using namespace mysql;
+
+    ODB_POTENTIALLY_UNUSED (db);
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    id_image_type& i (sts.id_image ());
+    init (i, id);
+
+    binding& idb (sts.id_image_binding ());
+    if (i.version != sts.id_image_version () || idb.version == 0)
+    {
+      bind (idb.bind, i);
+      sts.id_image_version (i.version);
+      idb.version++;
+    }
+
+    if (sts.erase_statement ().execute () != 1)
+      throw object_not_persistent ();
+
+    pointer_cache_traits::erase (db, id);
+  }
+
+  access::object_traits_impl< ::dbPublisher, id_mysql >::pointer_type
+  access::object_traits_impl< ::dbPublisher, id_mysql >::
+  find (database& db, const id_type& id)
+  {
+    using namespace mysql;
+
+    {
+      pointer_type p (pointer_cache_traits::find (db, id));
+
+      if (!pointer_traits::null_ptr (p))
+        return p;
+    }
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    statements_type::auto_lock l (sts);
+
+    if (l.locked ())
+    {
+      if (!find_ (sts, &id))
+        return pointer_type ();
+    }
+
+    pointer_type p (
+      access::object_factory<object_type, pointer_type>::create ());
+    pointer_traits::guard pg (p);
+
+    pointer_cache_traits::insert_guard ig (
+      pointer_cache_traits::insert (db, id, p));
+
+    object_type& obj (pointer_traits::get_ref (p));
+
+    if (l.locked ())
+    {
+      select_statement& st (sts.find_statement ());
+      ODB_POTENTIALLY_UNUSED (st);
+
+      callback (db, obj, callback_event::pre_load);
+      init (obj, sts.image (), &db);
+      load_ (sts, obj, false);
+      sts.load_delayed (0);
+      l.unlock ();
+      callback (db, obj, callback_event::post_load);
+      pointer_cache_traits::load (ig.position ());
+    }
+    else
+      sts.delay_load (id, obj, ig.position ());
+
+    ig.release ();
+    pg.release ();
+    return p;
+  }
+
+  bool access::object_traits_impl< ::dbPublisher, id_mysql >::
+  find (database& db, const id_type& id, object_type& obj)
+  {
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    statements_type::auto_lock l (sts);
+
+    if (!find_ (sts, &id))
+      return false;
+
+    select_statement& st (sts.find_statement ());
+    ODB_POTENTIALLY_UNUSED (st);
+
+    reference_cache_traits::position_type pos (
+      reference_cache_traits::insert (db, id, obj));
+    reference_cache_traits::insert_guard ig (pos);
+
+    callback (db, obj, callback_event::pre_load);
+    init (obj, sts.image (), &db);
+    load_ (sts, obj, false);
+    sts.load_delayed (0);
+    l.unlock ();
+    callback (db, obj, callback_event::post_load);
+    reference_cache_traits::load (pos);
+    ig.release ();
+    return true;
+  }
+
+  bool access::object_traits_impl< ::dbPublisher, id_mysql >::
+  reload (database& db, object_type& obj)
+  {
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    statements_type::auto_lock l (sts);
+
+    const id_type& id  (
+      obj.id_);
+
+    if (!find_ (sts, &id))
+      return false;
+
+    select_statement& st (sts.find_statement ());
+    ODB_POTENTIALLY_UNUSED (st);
+
+    callback (db, obj, callback_event::pre_load);
+    init (obj, sts.image (), &db);
+    load_ (sts, obj, true);
+    sts.load_delayed (0);
+    l.unlock ();
+    callback (db, obj, callback_event::post_load);
+    return true;
+  }
+
+  bool access::object_traits_impl< ::dbPublisher, id_mysql >::
+  find_ (statements_type& sts,
+         const id_type* id)
+  {
+    using namespace mysql;
+
+    id_image_type& i (sts.id_image ());
+    init (i, *id);
+
+    binding& idb (sts.id_image_binding ());
+    if (i.version != sts.id_image_version () || idb.version == 0)
+    {
+      bind (idb.bind, i);
+      sts.id_image_version (i.version);
+      idb.version++;
+    }
+
+    image_type& im (sts.image ());
+    binding& imb (sts.select_image_binding ());
+
+    if (im.version != sts.select_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_select);
+      sts.select_image_version (im.version);
+      imb.version++;
+    }
+
+    select_statement& st (sts.find_statement ());
+
+    st.execute ();
+    auto_result ar (st);
+    select_statement::result r (st.fetch ());
+
+    if (r == select_statement::truncated)
+    {
+      if (grow (im, sts.select_image_truncated ()))
+        im.version++;
+
+      if (im.version != sts.select_image_version ())
+      {
+        bind (imb.bind, im, statement_select);
+        sts.select_image_version (im.version);
+        imb.version++;
+        st.refetch ();
+      }
+    }
+
+    return r != select_statement::no_data;
+  }
+
+  result< access::object_traits_impl< ::dbPublisher, id_mysql >::object_type >
+  access::object_traits_impl< ::dbPublisher, id_mysql >::
+  query (database&, const query_base_type& q)
+  {
+    using namespace mysql;
+    using odb::details::shared;
+    using odb::details::shared_ptr;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+
+    statements_type& sts (
+      conn.statement_cache ().find_object<object_type> ());
+
+    image_type& im (sts.image ());
+    binding& imb (sts.select_image_binding ());
+
+    if (im.version != sts.select_image_version () ||
+        imb.version == 0)
+    {
+      bind (imb.bind, im, statement_select);
+      sts.select_image_version (im.version);
+      imb.version++;
+    }
+
+    std::string text (query_statement);
+    if (!q.empty ())
+    {
+      text += " ";
+      text += q.clause ();
+    }
+
+    q.init_parameters ();
+    shared_ptr<select_statement> st (
+      new (shared) select_statement (
+        conn,
+        text,
+        false,
+        true,
+        q.parameters_binding (),
+        imb));
+
+    st->execute ();
+
+    shared_ptr< odb::object_result_impl<object_type> > r (
+      new (shared) mysql::object_result_impl<object_type> (
+        q, st, sts, 0));
+
+    return result<object_type> (r);
+  }
+
+  unsigned long long access::object_traits_impl< ::dbPublisher, id_mysql >::
+  erase_query (database&, const query_base_type& q)
+  {
+    using namespace mysql;
+
+    mysql::connection& conn (
+      mysql::transaction::current ().connection ());
+
+    std::string text (erase_query_statement);
+    if (!q.empty ())
+    {
+      text += ' ';
+      text += q.clause ();
+    }
+
+    q.init_parameters ();
+    delete_statement st (
+      conn,
+      text,
+      q.parameters_binding ());
+
+    return st.execute ();
+  }
 }
 
 #include <odb/post.hxx>

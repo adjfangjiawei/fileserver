@@ -1,5 +1,6 @@
 #ifndef UTILS_ID
 #define UTILS_ID
+#include <snowflake.hpp>
 #include <string>
 namespace utils {
     // 书名的正则表达式，形式为books/*
@@ -13,5 +14,8 @@ namespace utils {
     extern uint AuthorGetIDFromName(std::string_view name);
     extern std::string AuthorGetNameFromID(uint id);
     extern uint GetRequestID();
+    using snowflake_t = snowflake<1534832906275L>;
+    extern snowflake_t InitSnowFlakeID();
+    extern uint GenerateSnowFlakeID();
 }  // namespace utils
 #endif

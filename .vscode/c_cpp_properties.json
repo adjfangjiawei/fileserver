@@ -8,7 +8,9 @@
                 "${workspaceFolder}/gateway/Public",
                 "${workspaceFolder}/util/Public",
                 "${workspaceFolder}/Neo4j/Public",
+                "${workspaceFolder}/User/Public",
                 "/linux/include"
+               // "/mnt/m/linux/include",
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang++",

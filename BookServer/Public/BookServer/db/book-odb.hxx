@@ -74,6 +74,90 @@ namespace odb
     static void
     callback (database&, const object_type&, callback_event);
   };
+
+  // dbAuthor
+  //
+  template <>
+  struct class_traits< ::dbAuthor >
+  {
+    static const class_kind kind = class_object;
+  };
+
+  template <>
+  class access::object_traits< ::dbAuthor >
+  {
+    public:
+    typedef ::dbAuthor object_type;
+    typedef ::dbAuthor* pointer_type;
+    typedef odb::pointer_traits<pointer_type> pointer_traits;
+
+    static const bool polymorphic = false;
+
+    typedef long unsigned int id_type;
+
+    static const bool auto_id = true;
+
+    static const bool abstract = false;
+
+    static id_type
+    id (const object_type&);
+
+    typedef
+    no_op_pointer_cache_traits<pointer_type>
+    pointer_cache_traits;
+
+    typedef
+    no_op_reference_cache_traits<object_type>
+    reference_cache_traits;
+
+    static void
+    callback (database&, object_type&, callback_event);
+
+    static void
+    callback (database&, const object_type&, callback_event);
+  };
+
+  // dbPublisher
+  //
+  template <>
+  struct class_traits< ::dbPublisher >
+  {
+    static const class_kind kind = class_object;
+  };
+
+  template <>
+  class access::object_traits< ::dbPublisher >
+  {
+    public:
+    typedef ::dbPublisher object_type;
+    typedef ::dbPublisher* pointer_type;
+    typedef odb::pointer_traits<pointer_type> pointer_traits;
+
+    static const bool polymorphic = false;
+
+    typedef long unsigned int id_type;
+
+    static const bool auto_id = true;
+
+    static const bool abstract = false;
+
+    static id_type
+    id (const object_type&);
+
+    typedef
+    no_op_pointer_cache_traits<pointer_type>
+    pointer_cache_traits;
+
+    typedef
+    no_op_reference_cache_traits<object_type>
+    reference_cache_traits;
+
+    static void
+    callback (database&, object_type&, callback_event);
+
+    static void
+    callback (database&, const object_type&, callback_event);
+  };
 }
 
 #include <odb/details/buffer.hxx>
@@ -352,7 +436,573 @@ namespace odb
   {
   };
 
+  // dbAuthor
+  //
+  template <typename A>
+  struct query_columns< ::dbAuthor, id_mysql, A >
+  {
+    // id
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        long unsigned int,
+        mysql::id_ulonglong >::query_type,
+      mysql::id_ulonglong >
+    id_type_;
+
+    static const id_type_ id;
+
+    // name
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    name_type_;
+
+    static const name_type_ name;
+
+    // birth_date
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    birth_date_type_;
+
+    static const birth_date_type_ birth_date;
+
+    // birth_country
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    birth_country_type_;
+
+    static const birth_country_type_ birth_country;
+
+    // birth_place_detail
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    birth_place_detail_type_;
+
+    static const birth_place_detail_type_ birth_place_detail;
+
+    // death_date
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    death_date_type_;
+
+    static const death_date_type_ death_date;
+
+    // gender
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::dbAuthor::Gender,
+        mysql::id_utiny >::query_type,
+      mysql::id_utiny >
+    gender_type_;
+
+    static const gender_type_ gender;
+  };
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::id_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  id (A::table_name, "`id`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::name_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  name (A::table_name, "`name`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::birth_date_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  birth_date (A::table_name, "`birth_date`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::birth_country_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  birth_country (A::table_name, "`birth_country`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::birth_place_detail_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  birth_place_detail (A::table_name, "`birth_place_detail`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::death_date_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  death_date (A::table_name, "`death_date`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbAuthor, id_mysql, A >::gender_type_
+  query_columns< ::dbAuthor, id_mysql, A >::
+  gender (A::table_name, "`gender`", 0);
+
+  template <typename A>
+  struct pointer_query_columns< ::dbAuthor, id_mysql, A >:
+    query_columns< ::dbAuthor, id_mysql, A >
+  {
+  };
+
+  template <>
+  class access::object_traits_impl< ::dbAuthor, id_mysql >:
+    public access::object_traits< ::dbAuthor >
+  {
+    public:
+    struct id_image_type
+    {
+      unsigned long long id_value;
+      my_bool id_null;
+
+      std::size_t version;
+    };
+
+    struct image_type
+    {
+      // id_
+      //
+      unsigned long long id_value;
+      my_bool id_null;
+
+      // name
+      //
+      details::buffer name_value;
+      unsigned long name_size;
+      my_bool name_null;
+
+      // birth_date
+      //
+      details::buffer birth_date_value;
+      unsigned long birth_date_size;
+      my_bool birth_date_null;
+
+      // birth_country
+      //
+      details::buffer birth_country_value;
+      unsigned long birth_country_size;
+      my_bool birth_country_null;
+
+      // birth_place_detail
+      //
+      details::buffer birth_place_detail_value;
+      unsigned long birth_place_detail_size;
+      my_bool birth_place_detail_null;
+
+      // death_date
+      //
+      details::buffer death_date_value;
+      unsigned long death_date_size;
+      my_bool death_date_null;
+
+      // gender
+      //
+      unsigned char gender_value;
+      my_bool gender_null;
+
+      std::size_t version;
+    };
+
+    struct extra_statement_cache_type;
+
+    using object_traits<object_type>::id;
+
+    static id_type
+    id (const id_image_type&);
+
+    static id_type
+    id (const image_type&);
+
+    static bool
+    grow (image_type&,
+          my_bool*);
+
+    static void
+    bind (MYSQL_BIND*,
+          image_type&,
+          mysql::statement_kind);
+
+    static void
+    bind (MYSQL_BIND*, id_image_type&);
+
+    static bool
+    init (image_type&,
+          const object_type&,
+          mysql::statement_kind);
+
+    static void
+    init (object_type&,
+          const image_type&,
+          database*);
+
+    static void
+    init (id_image_type&, const id_type&);
+
+    typedef mysql::object_statements<object_type> statements_type;
+
+    typedef mysql::query_base query_base_type;
+
+    static const std::size_t column_count = 7UL;
+    static const std::size_t id_column_count = 1UL;
+    static const std::size_t inverse_column_count = 0UL;
+    static const std::size_t readonly_column_count = 0UL;
+    static const std::size_t managed_optimistic_column_count = 0UL;
+
+    static const std::size_t separate_load_column_count = 0UL;
+    static const std::size_t separate_update_column_count = 0UL;
+
+    static const bool versioned = false;
+
+    static const char persist_statement[];
+    static const char find_statement[];
+    static const char update_statement[];
+    static const char erase_statement[];
+    static const char query_statement[];
+    static const char erase_query_statement[];
+
+    static const char table_name[];
+
+    static void
+    persist (database&, object_type&);
+
+    static pointer_type
+    find (database&, const id_type&);
+
+    static bool
+    find (database&, const id_type&, object_type&);
+
+    static bool
+    reload (database&, object_type&);
+
+    static void
+    update (database&, const object_type&);
+
+    static void
+    erase (database&, const id_type&);
+
+    static void
+    erase (database&, const object_type&);
+
+    static result<object_type>
+    query (database&, const query_base_type&);
+
+    static unsigned long long
+    erase_query (database&, const query_base_type&);
+
+    public:
+    static bool
+    find_ (statements_type&,
+           const id_type*);
+
+    static void
+    load_ (statements_type&,
+           object_type&,
+           bool reload);
+  };
+
+  template <>
+  class access::object_traits_impl< ::dbAuthor, id_common >:
+    public access::object_traits_impl< ::dbAuthor, id_mysql >
+  {
+  };
+
+  // dbPublisher
+  //
+  template <typename A>
+  struct query_columns< ::dbPublisher, id_mysql, A >
+  {
+    // id
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        long unsigned int,
+        mysql::id_ulonglong >::query_type,
+      mysql::id_ulonglong >
+    id_type_;
+
+    static const id_type_ id;
+
+    // name
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    name_type_;
+
+    static const name_type_ name;
+
+    // address
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    address_type_;
+
+    static const address_type_ address;
+
+    // phone
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    phone_type_;
+
+    static const phone_type_ phone;
+
+    // url
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    url_type_;
+
+    static const url_type_ url;
+
+    // intro
+    //
+    typedef
+    mysql::query_column<
+      mysql::value_traits<
+        ::std::string,
+        mysql::id_string >::query_type,
+      mysql::id_string >
+    intro_type_;
+
+    static const intro_type_ intro;
+  };
+
+  template <typename A>
+  const typename query_columns< ::dbPublisher, id_mysql, A >::id_type_
+  query_columns< ::dbPublisher, id_mysql, A >::
+  id (A::table_name, "`id`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbPublisher, id_mysql, A >::name_type_
+  query_columns< ::dbPublisher, id_mysql, A >::
+  name (A::table_name, "`name`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbPublisher, id_mysql, A >::address_type_
+  query_columns< ::dbPublisher, id_mysql, A >::
+  address (A::table_name, "`address`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbPublisher, id_mysql, A >::phone_type_
+  query_columns< ::dbPublisher, id_mysql, A >::
+  phone (A::table_name, "`phone`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbPublisher, id_mysql, A >::url_type_
+  query_columns< ::dbPublisher, id_mysql, A >::
+  url (A::table_name, "`url`", 0);
+
+  template <typename A>
+  const typename query_columns< ::dbPublisher, id_mysql, A >::intro_type_
+  query_columns< ::dbPublisher, id_mysql, A >::
+  intro (A::table_name, "`intro`", 0);
+
+  template <typename A>
+  struct pointer_query_columns< ::dbPublisher, id_mysql, A >:
+    query_columns< ::dbPublisher, id_mysql, A >
+  {
+  };
+
+  template <>
+  class access::object_traits_impl< ::dbPublisher, id_mysql >:
+    public access::object_traits< ::dbPublisher >
+  {
+    public:
+    struct id_image_type
+    {
+      unsigned long long id_value;
+      my_bool id_null;
+
+      std::size_t version;
+    };
+
+    struct image_type
+    {
+      // id_
+      //
+      unsigned long long id_value;
+      my_bool id_null;
+
+      // name
+      //
+      details::buffer name_value;
+      unsigned long name_size;
+      my_bool name_null;
+
+      // address
+      //
+      details::buffer address_value;
+      unsigned long address_size;
+      my_bool address_null;
+
+      // phone
+      //
+      details::buffer phone_value;
+      unsigned long phone_size;
+      my_bool phone_null;
+
+      // url
+      //
+      details::buffer url_value;
+      unsigned long url_size;
+      my_bool url_null;
+
+      // intro
+      //
+      details::buffer intro_value;
+      unsigned long intro_size;
+      my_bool intro_null;
+
+      std::size_t version;
+    };
+
+    struct extra_statement_cache_type;
+
+    using object_traits<object_type>::id;
+
+    static id_type
+    id (const id_image_type&);
+
+    static id_type
+    id (const image_type&);
+
+    static bool
+    grow (image_type&,
+          my_bool*);
+
+    static void
+    bind (MYSQL_BIND*,
+          image_type&,
+          mysql::statement_kind);
+
+    static void
+    bind (MYSQL_BIND*, id_image_type&);
+
+    static bool
+    init (image_type&,
+          const object_type&,
+          mysql::statement_kind);
+
+    static void
+    init (object_type&,
+          const image_type&,
+          database*);
+
+    static void
+    init (id_image_type&, const id_type&);
+
+    typedef mysql::object_statements<object_type> statements_type;
+
+    typedef mysql::query_base query_base_type;
+
+    static const std::size_t column_count = 6UL;
+    static const std::size_t id_column_count = 1UL;
+    static const std::size_t inverse_column_count = 0UL;
+    static const std::size_t readonly_column_count = 0UL;
+    static const std::size_t managed_optimistic_column_count = 0UL;
+
+    static const std::size_t separate_load_column_count = 0UL;
+    static const std::size_t separate_update_column_count = 0UL;
+
+    static const bool versioned = false;
+
+    static const char persist_statement[];
+    static const char find_statement[];
+    static const char update_statement[];
+    static const char erase_statement[];
+    static const char query_statement[];
+    static const char erase_query_statement[];
+
+    static const char table_name[];
+
+    static void
+    persist (database&, object_type&);
+
+    static pointer_type
+    find (database&, const id_type&);
+
+    static bool
+    find (database&, const id_type&, object_type&);
+
+    static bool
+    reload (database&, object_type&);
+
+    static void
+    update (database&, const object_type&);
+
+    static void
+    erase (database&, const id_type&);
+
+    static void
+    erase (database&, const object_type&);
+
+    static result<object_type>
+    query (database&, const query_base_type&);
+
+    static unsigned long long
+    erase_query (database&, const query_base_type&);
+
+    public:
+    static bool
+    find_ (statements_type&,
+           const id_type*);
+
+    static void
+    load_ (statements_type&,
+           object_type&,
+           bool reload);
+  };
+
+  template <>
+  class access::object_traits_impl< ::dbPublisher, id_common >:
+    public access::object_traits_impl< ::dbPublisher, id_mysql >
+  {
+  };
+
   // dbBook
+  //
+  // dbAuthor
+  //
+  // dbPublisher
   //
 }
 

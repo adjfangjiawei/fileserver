@@ -2,6 +2,10 @@
  * compiler for C++.
  */
 
+DROP TABLE IF EXISTS `dbPublisher`;
+
+DROP TABLE IF EXISTS `dbAuthor`;
+
 DROP TABLE IF EXISTS `dbBook`;
 
 CREATE TABLE `dbBook` (
@@ -27,4 +31,29 @@ CREATE INDEX `chinese_category_big_i`
 
 CREATE INDEX `chinese_category_specific_i`
   ON `dbBook` (`chinese_category_specific`);
+
+CREATE TABLE `dbAuthor` (
+  `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `name` TEXT NOT NULL,
+  `birth_date` TEXT NOT NULL,
+  `birth_country` TEXT NOT NULL,
+  `birth_place_detail` TEXT NOT NULL,
+  `death_date` TEXT NOT NULL,
+  `gender` TINYINT UNSIGNED NOT NULL)
+ ENGINE=InnoDB;
+
+CREATE INDEX `id_i`
+  ON `dbAuthor` (`id`);
+
+CREATE TABLE `dbPublisher` (
+  `id` BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `name` TEXT NOT NULL,
+  `address` TEXT NOT NULL,
+  `phone` TEXT NOT NULL,
+  `url` TEXT NOT NULL,
+  `intro` TEXT NOT NULL)
+ ENGINE=InnoDB;
+
+CREATE INDEX `id_i`
+  ON `dbPublisher` (`id`);
 

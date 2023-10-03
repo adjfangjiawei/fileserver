@@ -11,17 +11,6 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     *((std::stringstream *)stream) << data << std::endl;
     return size * nmemb;
 }
-// 给定一些请求字符串构造curl的请求的json字符串
-std::string makeCypherRequest(std::vector<std::string> statements) {
-    // strint '{"statements" : [ {    "statement" : "match (n) return n"  }  ]'
-    std::vector<std::initializer_list<std::string>> stats;
-    nlohmann::json req;
-    for (auto statement : statements) {
-        std::map<std::string, std::string> j{{"statement", statement}};
-        req["statements"].emplace_back(j);
-    }
-    return req.dump();
-}
 
 // 解析返回的json字符串
 std::vector<nlohmann::json> getItemsFromJson(std::string jsonStr) {
