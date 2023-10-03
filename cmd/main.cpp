@@ -3,6 +3,7 @@
 #include <gateway/gateway.h>
 #include <libconfig.h>
 #include <spdlog/spdlog.h>
+#include <utils/util.h>
 
 #include <BookServer/jb/book.hxx>
 #include <CLI/CLI.hpp>
@@ -17,7 +18,7 @@ using transaction = odb::core::transaction;
 int main(int argc, char* argv[]) {
     using namespace std;
 
-    JbBook book;
+    JbBook book{.display_name = "红楼梦", .author_name = utils::AuthorGetNameFromID(11), .status = JbBook::BookStatus::WRTING};
 
     // 添加编译的配置文件的选项
     CLI::App app{"a learning software"};
@@ -48,8 +49,8 @@ int main(int argc, char* argv[]) {
     const char* mysql_database = new char[30];
     config_lookup_string(&cfg, "mysql.database", &(mysql_database));
     database db(new odb::mysql::database(mysql_user, mysql_password, mysql_database, mysql_host, mysql_port));
-    JbAuthor author{.display_name = "张三"};
-    CreateAuthor(db, &author);
+    // JbAuthor author{.display_name = "张三"};
+    // CreateAuthor(db, &author);
     CreateBook(db, &book);
 
     auto gateWay = std::make_shared<gateway>(cfg);

@@ -59,7 +59,8 @@ JbBook* CreateBook(database db, JbBook* req) {
     NbBook nbBook{.ID = static_cast<unsigned long>(bookId)};
     NbAuthor nbAuthor{.ID = AuthorId};
     NbBookAuthorRelation nbBookAuthorRelation{.relation_name = "bookwithauthor"};
-    CreateRelation(std::shared_ptr<NbBook>(&nbBook), std::shared_ptr<NbAuthor>(&nbAuthor), std::shared_ptr<NbBookAuthorRelation>(&nbBookAuthorRelation));
+    CreateNode(&nbBook);
+    CreateRelation(&nbBook, &nbAuthor, &nbBookAuthorRelation);
 
     // 输出契约
     if constexpr (enable_contract) {
@@ -137,23 +138,23 @@ std::shared_ptr<JbAuthor> CreateAuthor(database db, JbAuthor* req) {
 
     // 在Neo4j中创建一个作者节点
     NbAuthor nAthor{.ID = author.id_};
-    CreateNode(std::shared_ptr<NbAuthor>{&nAthor});
+    CreateNode(&nAthor);
 
     return author.ToPb();
 }
 // 批量创建书
-// const char* BatchCreateBook() {}
+const char* BatchCreateBook() {}
 
-// void AnalysisBook() {
-//     // 使用ICU分词
-//     // 对每一个词创建Neo4j节点,存储词
+void AnalysisBook() {
+    // 使用ICU分词
+    // 对每一个词创建Neo4j节点,存储词
 
-//     // 使用ICU分句
-//     // 对每一句话创建Neo4j节点,仅存储Id,并把词编码后存入milvus
+    // 使用ICU分句
+    // 对每一句话创建Neo4j节点,仅存储Id,并把词编码后存入milvus
 
-//     // 使用ICU分段
-// }
+    // 使用ICU分段
+}
 
-// void AnalysisPaperStycle() {
-//     // 对纸张检测，识别出所有横线
-// }
+void AnalysisPaperStycle() {
+    // 对纸张检测，识别出所有横线
+}
