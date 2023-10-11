@@ -15,3 +15,8 @@ main
 .ninja_log
 test/cmake_install.cmake
 infer-out
+/_deps
+cpm-package-lock.cmake
+test/Makefile
+test/mytests
+test/mytests

@@ -18,8 +18,6 @@ using transaction = odb::core::transaction;
 int main(int argc, char* argv[]) {
     using namespace std;
 
-    JbBook book{.display_name = "红楼梦", .author_name = utils::AuthorGetNameFromID(11), .status = JbBook::BookStatus::WRTING};
-
     // 添加编译的配置文件的选项
     CLI::App app{"a learning software"};
     std::string config_file;
@@ -38,21 +36,6 @@ int main(int argc, char* argv[]) {
         config_destroy(&cfg);
         return 1;
     }
-    int mysql_port = 0;
-    config_lookup_int(&cfg, "mysql.port", &mysql_port);
-    const char* mysql_host = new char[30];
-    config_lookup_string(&cfg, "mysql.host", &(mysql_host));
-    const char* mysql_user = new char[30];
-    config_lookup_string(&cfg, "mysql.user", &(mysql_user));
-    const char* mysql_password = new char[30];
-    config_lookup_string(&cfg, "mysql.password", &(mysql_password));
-    const char* mysql_database = new char[30];
-    config_lookup_string(&cfg, "mysql.database", &(mysql_database));
-    database db(new odb::mysql::database(mysql_user, mysql_password, mysql_database, mysql_host, mysql_port));
-    // JbAuthor author{.display_name = "张三"};
-    // CreateAuthor(db, &author);
-    CreateBook(db, &book);
-
     auto gateWay = std::make_shared<gateway>(cfg);
     gateWay->initGateway();
     config_destroy(&cfg);
