@@ -1,0 +1,76 @@
+                // 有match关系的节点
+
+                // 检查语法的正确性,暂不启用
+                // auto index = 0;
+                // enum class ParseState {
+                //     NONE,
+                //     START,
+                //     Node,
+                //     Relation,
+                //     MultiJump,
+                //     NodeToRelation,
+                //     RelationToNode,
+                //     END,
+                // };
+                // ParseState state = ParseState::START;
+                // 记录了node或者relation的上一个位置
+                // auto preIdex = 0;
+                // for (auto index = 0; index < label.length(); index++) {
+                //     auto letter = label[index];
+                //     if (index == 0 && letter != '(') {
+                //         spdlog::error("[neo4j_query::find] 语法错误");
+                //         return {};
+                //     }
+                //     if (letter == '(' || letter == ')' || letter == '[' || letter == ']') {
+                //         continue;
+                //     }
+                //     if (state == ParseState::START || state == ParseState::Node) {
+                //         if (isalnum(letter)) {
+                //             index++;
+                //             continue;
+                //         } else if (letter == '-' || letter == '<') {
+                //             if (index + 1 < label.length()) {
+                //                 if (label[index + 1] != ')') {
+                //                     spdlog::error("[neo4j_query::find] 语法错误");
+                //                 }
+                //             } else {
+                //                 spdlog::error("[neo4j_query::find] 语法错误");
+                //             }
+                //             index = index - 1;
+                //             state = ParseState::NodeToRelation;
+                //         } else {
+                //             spdlog::error("[neo4j_query::find] 语法错误");
+                //             return {};
+                //         }
+                //     } else if (state == ParseState::NodeToRelation) {
+                //         if (letter == '-') {
+                //             if (index + 1 < label.length()) {
+                //                 if (label[index + 1] != '[') {
+                //                     spdlog::error("[neo4j_query::find] 语法错误");
+                //                 }
+                //             } else {
+                //                 spdlog::error("[neo4j_query::find] 语法错误");
+                //             }
+                //             state = ParseState::Relation;
+                //         }
+                //     } else if (state == ParseState::Relation) {
+                //         if (isalnum(letter)) {
+                //             index++;
+                //             continue;
+                //         } else if (letter == '-' || letter == '>') {
+                //             if (index + 1 < label.length()) {
+                //                 if (label[index + 1] != ')') {
+                //                     spdlog::error("[neo4j_query::find] 语法错误");
+                //                 }
+                //             } else {
+                //                 spdlog::error("[neo4j_query::find] 语法错误");
+                //             }
+                //             index = index - 1;
+                //             state = ParseState::RelationToNode;
+                //         } else {
+                //             spdlog::error("[neo4j_query::find] 语法错误");
+                //             return {};
+                //         }
+                //     } else if (state == ParseState::RelationToNode) {
+                //     }
+                // }

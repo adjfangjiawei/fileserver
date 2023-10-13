@@ -18,7 +18,11 @@ class NbAuthor {
 
 class NbBookAuthorRelation {
   public:
-    std::string relation_name;
+    // 节点起点rnb+数字
+    // 节点重点rne+数字
+    std::string nodeBegin{"Book"};
+    std::string nodeEnd{"Author"};
+    std::string relation_name{"booksAuthor"};
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(NbBookAuthorRelation, relation_name);
 };
 

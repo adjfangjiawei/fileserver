@@ -194,7 +194,12 @@ concept relation_concept = requires(T t) {
 class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
     neo4j_query() { wherestatement = ""; }
 
+    std::shared_ptr<neo4j_query> jump(std::string str, int jumpNumber) {}
+
     // 查询条件
+    template <class... T>
+    std::shared_ptr<neo4j_query> where(std::string str, T... para_next) {}
+
     template <class M, class... T>
     std::shared_ptr<neo4j_query> where(std::string str, M para, T... para_next) {
         if (str.length() == 0) {
@@ -221,32 +226,39 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
         return shared_from_this();
     }
 
-    template <class... T>
-    std::shared_ptr<neo4j_query> where(std::string str, T... para_next) {}
+    template <>
+    std::shared_ptr<neo4j_query> where(std::string str) {}
 
     // 排序规则
-    std::shared_ptr<neo4j_query> order(std::string orderBy) {}
+    std::shared_ptr<neo4j_query> order(std::string orderBy) { orderbystatement = " ORDER BY " + orderBy; }
 
     // 数量上限
     std::shared_ptr<neo4j_query> limit(int limit) {}
 
     template <class U, class... T>
     std::string getReturnStatement(U nodeOrRelation, T... nodeOrRelations) {
-        if constexpr (node_concept<U>) {
+        using nodeOrRelationType = U::value_type;
+        if constexpr (node_concept<nodeOrRelationType>) {
             returnstatement = "n" + std::to_string(nodeReturnIndex) + ",";
+            nodeReturnIndex++;
         }
-        if constexpr (relation_concept<U>) {
-            returnstatement = "r" + std::to_string(nodeReturnIndex) + ",";
+        if constexpr (relation_concept<nodeOrRelationType>) {
+            returnstatement = "r" + std::to_string(relationReturnIndex) + ",";
+            relationReturnIndex++;
         }
+        getReturnStatement(nodeOrRelations...);
     }
 
     template <class U>
     std::string getReturnStatement(U nodeOrRelation) {
-        if constexpr (node_concept<U>) {
+        using nodeOrRelationType = U::value_type;
+        if constexpr (node_concept<nodeOrRelationType>) {
             returnstatement = "n" + std::to_string(nodeReturnIndex) + ",";
+            nodeReturnIndex++;
         }
-        if constexpr (relation_concept<U>) {
-            returnstatement = "r" + std::to_string(nodeReturnIndex) + ",";
+        if constexpr (relation_concept<nodeOrRelationType>) {
+            returnstatement = "r" + std::to_string(relationReturnIndex) + ",";
+            relationReturnIndex++;
         }
         returnstatement = returnstatement.substr(0, returnstatement.length() - 1);
     }
@@ -257,121 +269,42 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
         returnstatement += "return ";
         getReturnStatement(nodeOrRelation, nodeOrRelations...);
         returnstatement = returnstatement + ";";
+        getMatchStatement(nodeOrRelation, nodeOrRelations...);
         auto req = makeCypherRequest({returnstatement});
         getItemsFromJson(req);
     }
 
-    // 匹配的字段，最终返回的结果
-    std::vector<nlohmann::json> find(std::vector<std::string> labels) {
-        using namespace std::literals;
-        // 找出所有的node
-        std::vector<std::string> node;
-        std::vector<std::string> relation;
-        std::vector<std::string> matchexpressions;
-        for (auto &label : labels) {
-            // 单独的节点
-            if (label.substr(0, 2) == "n:") {
-                node.push_back(label.substr(2));
-                mapNode[label.substr(2)] = true;
-                matchexpressions.push_back("(" + label.substr(2) + ")");
-            } else {
-                matchexpressions.push_back(label);
-                // 有match关系的节点
+    template <class U, class... T>
+    std::shared_ptr<neo4j_query> getMatchStatement(U nodeOrRelation, T... nodeOrRelations) {
+        using nodeOrRelationType = U::value_type;
+        // match边
+        matchstatement += "match ";
+        for (auto index = 0; index < nodeReturnIndex; index++) {
+            matchstatement += "(n" + std::to_string(index) + ":" + nodeOrRelation.node_name + ")" + ",";
+        }
 
-                // 检查语法的正确性,暂不启用
-                // auto index = 0;
-                // enum class ParseState {
-                //     NONE,
-                //     START,
-                //     Node,
-                //     Relation,
-                //     MultiJump,
-                //     NodeToRelation,
-                //     RelationToNode,
-                //     END,
-                // };
-                // ParseState state = ParseState::START;
-                // 记录了node或者relation的上一个位置
-                // auto preIdex = 0;
-                // for (auto index = 0; index < label.length(); index++) {
-                //     auto letter = label[index];
-                //     if (index == 0 && letter != '(') {
-                //         spdlog::error("[neo4j_query::find] 语法错误");
-                //         return {};
-                //     }
-                //     if (letter == '(' || letter == ')' || letter == '[' || letter == ']') {
-                //         continue;
-                //     }
-                //     if (state == ParseState::START || state == ParseState::Node) {
-                //         if (isalnum(letter)) {
-                //             index++;
-                //             continue;
-                //         } else if (letter == '-' || letter == '<') {
-                //             if (index + 1 < label.length()) {
-                //                 if (label[index + 1] != ')') {
-                //                     spdlog::error("[neo4j_query::find] 语法错误");
-                //                 }
-                //             } else {
-                //                 spdlog::error("[neo4j_query::find] 语法错误");
-                //             }
-                //             index = index - 1;
-                //             state = ParseState::NodeToRelation;
-                //         } else {
-                //             spdlog::error("[neo4j_query::find] 语法错误");
-                //             return {};
-                //         }
-                //     } else if (state == ParseState::NodeToRelation) {
-                //         if (letter == '-') {
-                //             if (index + 1 < label.length()) {
-                //                 if (label[index + 1] != '[') {
-                //                     spdlog::error("[neo4j_query::find] 语法错误");
-                //                 }
-                //             } else {
-                //                 spdlog::error("[neo4j_query::find] 语法错误");
-                //             }
-                //             state = ParseState::Relation;
-                //         }
-                //     } else if (state == ParseState::Relation) {
-                //         if (isalnum(letter)) {
-                //             index++;
-                //             continue;
-                //         } else if (letter == '-' || letter == '>') {
-                //             if (index + 1 < label.length()) {
-                //                 if (label[index + 1] != ')') {
-                //                     spdlog::error("[neo4j_query::find] 语法错误");
-                //                 }
-                //             } else {
-                //                 spdlog::error("[neo4j_query::find] 语法错误");
-                //             }
-                //             index = index - 1;
-                //             state = ParseState::RelationToNode;
-                //         } else {
-                //             spdlog::error("[neo4j_query::find] 语法错误");
-                //             return {};
-                //         }
-                //     } else if (state == ParseState::RelationToNode) {
-                //     }
-                // }
+        if (relationReturnIndex == 0) {
+            matchstatement = matchstatement.substr(0, matchstatement.length() - 1);
+            return;
+        }
+
+        // 处理顶点
+        for (auto index = 0; index < nodeReturnIndex; index++) {
+            matchstatement += "(r" + std::to_string(index) + ":" + nodeOrRelation.node_name + ")";
+            if (index != nodeReturnIndex - 1) {
+                matchstatement += ",";
             }
         }
-
-        std::string match = "match(";
-        for (auto matchexpression : matchexpressions) {
-            match = match + matchexpression + ",";
-        }
-        match = match.substr(0, match.length() - 1);
-        match = match + ")";
-        matchstatement = match + matchstatement;
     }
 
   private:
     std::string wherestatement;
     std::string matchstatement;
     std::string returnstatement;
+    std::string orderbystatement;
     int nodeReturnIndex = 0;
     int relationReturnIndex = 0;
     bool alreadywhere{false};
-    std::unordered_map<std::string, bool> mapNode;
-    std::unordered_map<std::string, bool> mapRelation;
+    std::unordered_map<std::string, int> mapRelationJumpNumber;
 };
 #endif

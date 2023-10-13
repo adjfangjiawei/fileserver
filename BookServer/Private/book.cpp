@@ -90,9 +90,6 @@ JbBook* CreateBook(database db, JbBook* req) {
     }
     return nullptr;
 
-    // // 创建一个出版社的Neo4j的节点
-    // unsigned long publishHomeId = 0;
-
     // 创建出版社和这本书的关系,出版社出版了这本书
 
     // 开始书的解析过程
