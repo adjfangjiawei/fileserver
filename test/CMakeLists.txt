@@ -3,8 +3,9 @@ cmake_minimum_required(VERSION 3.12)
 
 # 项目名称：倒没什么影响，但是cmake会默认设置一些变量，所以
 project(gUnittest)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20   -fsanitize=address -fpermissive -w")
 set(CMAKE_PREFIX_PATH /linux)
+set(CMAKE_BUILD_TYPE Debug)
 
 find_package(GTest REQUIRED)
 
@@ -29,7 +30,7 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(Boost COMPONENTS system url REQUIRED)
 find_package(OpenSSL REQUIRED)
 # abseil
-find_package(absl REQUIRED)
+# find_package(absl REQUIRED)
 
 find_library(LibConfig config /linux/lib)
 
@@ -39,4 +40,4 @@ target_link_libraries(mytests ${Boost_LIBRARIES})
 target_link_libraries(mytests ${LibConfig})
 target_link_libraries(mytests OpenSSL::SSL)
 target_link_libraries(mytests OpenSSL::Crypto)
-target_link_libraries(mytests absl::base)
+# target_link_libraries(mytests absl::base)

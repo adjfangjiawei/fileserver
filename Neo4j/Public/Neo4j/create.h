@@ -4,10 +4,12 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <vector>
 struct Neo4jClient {
     std::string url;
@@ -192,22 +194,23 @@ concept relation_concept = requires(T t) {
 };
 
 class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
+  public:
     neo4j_query() { wherestatement = ""; }
 
     std::shared_ptr<neo4j_query> jump(std::string str, int jumpNumber) {}
 
     // 查询条件
     template <class... T>
-    std::shared_ptr<neo4j_query> where(std::string str, T... para_next) {}
+    std::shared_ptr<neo4j_query> where(std::string str, T... para_next) {
+        return shared_from_this();
+    }
 
-    template <class M, class... T>
-    std::shared_ptr<neo4j_query> where(std::string str, M para, T... para_next) {
+    template <class M>
+    std::shared_ptr<neo4j_query> where(std::string str, M para) {
         if (str.length() == 0) {
-            return;
+            return shared_from_this();
         }
-        if (alreadywhere) {
-            wherestatement += " AND ";
-        } else {
+        if (!alreadywhere) {
             wherestatement += " WHERE ";
             alreadywhere = true;
         }
@@ -216,18 +219,44 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
             if (ch != '?') {
                 wherestatement += ch;
             } else {
-                wherestatement += std::to_string(para);
-                where(str.substr(index + 1), para_next...);
+                if constexpr (!std ::is_same_v<typename std::remove_reference<M>::type, const char *>) {
+                    wherestatement += std::to_string(para);
+                } else {
+                    wherestatement += std::string(para);
+                }
             }
             index = index + 1;
         }
 
-        wherestatement += str;
         return shared_from_this();
     }
+    template <class M, class... T>
+    std::shared_ptr<neo4j_query> where(std::string str, M para, T... para_next) {
+        if (str.length() == 0) {
+            return shared_from_this();
+        }
+        if (!alreadywhere) {
+            wherestatement += " WHERE ";
+            alreadywhere = true;
+        }
+        auto index = 0;
+        for (auto &&ch : str) {
+            if (ch != '?') {
+                wherestatement += ch;
+            } else {
+                if constexpr (!std ::is_same_v<typename std::remove_reference<M>::type, const char *>) {
+                    wherestatement += std::to_string(para);
+                } else {
+                    wherestatement += std::string(para);
+                }
+                where(str.substr(index + 1), para_next...);
+                break;
+            }
+            index = index + 1;
+        }
 
-    template <>
-    std::shared_ptr<neo4j_query> where(std::string str) {}
+        return shared_from_this();
+    }
 
     // 排序规则
     std::shared_ptr<neo4j_query> order(std::string orderBy) { orderbystatement = " ORDER BY " + orderBy; }
@@ -236,28 +265,28 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
     std::shared_ptr<neo4j_query> limit(int limit) {}
 
     template <class U, class... T>
-    std::string getReturnStatement(U nodeOrRelation, T... nodeOrRelations) {
+    void getReturnStatement(U nodeOrRelation, T... nodeOrRelations) {
         using nodeOrRelationType = U::value_type;
         if constexpr (node_concept<nodeOrRelationType>) {
-            returnstatement = "n" + std::to_string(nodeReturnIndex) + ",";
+            returnstatement += "n" + std::to_string(nodeReturnIndex) + ",";
             nodeReturnIndex++;
         }
         if constexpr (relation_concept<nodeOrRelationType>) {
-            returnstatement = "r" + std::to_string(relationReturnIndex) + ",";
+            returnstatement += "r" + std::to_string(relationReturnIndex) + ",";
             relationReturnIndex++;
         }
         getReturnStatement(nodeOrRelations...);
     }
 
     template <class U>
-    std::string getReturnStatement(U nodeOrRelation) {
+    void getReturnStatement(U nodeOrRelation) {
         using nodeOrRelationType = U::value_type;
         if constexpr (node_concept<nodeOrRelationType>) {
-            returnstatement = "n" + std::to_string(nodeReturnIndex) + ",";
+            returnstatement += "n" + std::to_string(nodeReturnIndex) + ",";
             nodeReturnIndex++;
         }
         if constexpr (relation_concept<nodeOrRelationType>) {
-            returnstatement = "r" + std::to_string(relationReturnIndex) + ",";
+            returnstatement += "r" + std::to_string(relationReturnIndex) + ",";
             relationReturnIndex++;
         }
         returnstatement = returnstatement.substr(0, returnstatement.length() - 1);
@@ -269,32 +298,58 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
         returnstatement += "return ";
         getReturnStatement(nodeOrRelation, nodeOrRelations...);
         returnstatement = returnstatement + ";";
+        // match边
+        matchstatement += "match ";
         getMatchStatement(nodeOrRelation, nodeOrRelations...);
-        auto req = makeCypherRequest({returnstatement});
-        getItemsFromJson(req);
+        auto req = makeCypherRequest({matchstatement + " " + wherestatement + " " + returnstatement});
+        std::string jsonStr = req;
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        std::stringstream out;
+        auto handle = curl_easy_init();
+        curl_easy_setopt(handle, CURLOPT_URL, "http://192.168.1.7:7474/db/neo4j/tx/commit");
+        curl_easy_setopt(handle, CURLOPT_POSTFIELDS, jsonStr.c_str());
+        curl_easy_setopt(handle, CURLOPT_POSTFIELDSIZE, strlen(jsonStr.c_str()));
+        curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(handle, CURLOPT_WRITEDATA, &out);
+        auto success = curl_easy_perform(handle);
+        std::string result = out.str();
+        std::cout << result;
+        nlohmann::json json_result = nlohmann::json::parse(result);
+        return shared_from_this();
     }
 
     template <class U, class... T>
-    std::shared_ptr<neo4j_query> getMatchStatement(U nodeOrRelation, T... nodeOrRelations) {
+    void getMatchStatement(U nodeOrRelation, T... nodeOrRelations) {
         using nodeOrRelationType = U::value_type;
-        // match边
-        matchstatement += "match ";
-        for (auto index = 0; index < nodeReturnIndex; index++) {
-            matchstatement += "(n" + std::to_string(index) + ":" + nodeOrRelation.node_name + ")" + ",";
+        if constexpr (node_concept<nodeOrRelationType>) {
+            matchstatement += "(n" + std::to_string(matchStatementIterNodeIndex) + ":" + nodeOrRelationType::node_name + ")" + ",";
+            matchStatementIterNodeIndex++;
+        } else if constexpr (relation_concept<nodeOrRelationType>) {
+            matchstatement += "(rnb" + std::to_string(matchStatementIterRelationIndex) + ":" + nodeOrRelationType::nodeBegin + ")-[r" + std::to_string(matchStatementIterRelationIndex) + ":" +
+                              nodeOrRelationType::relation_name + "]->(rne" + std::to_string(matchStatementIterRelationIndex) + ":" + nodeOrRelationType::nodeEnd + ")" + ",";
+            matchStatementIterRelationIndex++;
         }
 
-        if (relationReturnIndex == 0) {
-            matchstatement = matchstatement.substr(0, matchstatement.length() - 1);
-            return;
+        getMatchStatement(nodeOrRelations...);
+        return;
+    }
+
+    template <class U>
+    void getMatchStatement(U nodeOrRelation) {
+        using nodeOrRelationType = U::value_type;
+        if constexpr (node_concept<nodeOrRelationType>) {
+            matchstatement += "(n" + std::to_string(matchStatementIterNodeIndex) + ":" + nodeOrRelationType::node_name + ")" + ",";
+            matchStatementIterNodeIndex++;
+        } else if constexpr (relation_concept<nodeOrRelationType>) {
+            matchstatement += "(rnb" + std::to_string(matchStatementIterRelationIndex) + ":" + nodeOrRelationType::nodeBegin + ")-[r" + std::to_string(matchStatementIterRelationIndex) + ":" +
+                              nodeOrRelationType::relation_name + "]->(rne" + std::to_string(matchStatementIterRelationIndex) + ":" + nodeOrRelationType::nodeEnd + ")" + ",";
+            matchStatementIterRelationIndex++;
         }
 
-        // 处理顶点
-        for (auto index = 0; index < nodeReturnIndex; index++) {
-            matchstatement += "(r" + std::to_string(index) + ":" + nodeOrRelation.node_name + ")";
-            if (index != nodeReturnIndex - 1) {
-                matchstatement += ",";
-            }
-        }
+        matchstatement = matchstatement.substr(0, matchstatement.size() - 1);
+        return;
     }
 
   private:
@@ -304,6 +359,8 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
     std::string orderbystatement;
     int nodeReturnIndex = 0;
     int relationReturnIndex = 0;
+    int matchStatementIterNodeIndex = 0;
+    int matchStatementIterRelationIndex = 0;
     bool alreadywhere{false};
     std::unordered_map<std::string, int> mapRelationJumpNumber;
 };

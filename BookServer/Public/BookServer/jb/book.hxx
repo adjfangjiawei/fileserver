@@ -57,7 +57,7 @@ class JbBook {
     BookStatus status;
 
     // 书籍出版的出版社,书籍状态为发行或者绝版时有效
-    std::string publisher;
+    unsigned long publisher_id;
 
     // 书籍出版的出版人的资源名,书籍状态为发行或者绝版时有效
     std::string publisher_person_name;
@@ -67,8 +67,8 @@ class JbBook {
 
     // 书籍在中国国内定价,状态为已发行时有效.
     double price_in_chinese;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(JbBook, name, display_name, issn, isbn, chinese_category_big, chinese_category_specific, author_name, status, publisher, publisher_person_name, publisher_place_name,
-                                   price_in_chinese);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(JbBook, name, display_name, issn, isbn, chinese_category_big, chinese_category_specific, author_name, status, publisher_id, publisher_person_name,
+                                   publisher_place_name, price_in_chinese);
 };
 
 // 书籍标签

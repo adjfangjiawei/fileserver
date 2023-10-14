@@ -58,9 +58,16 @@ JbBook* CreateBook(database db, JbBook* req) {
 
     NbBook nbBook{.ID = static_cast<unsigned long>(bookId)};
     NbAuthor nbAuthor{.ID = AuthorId};
-    NbBookAuthorRelation nbBookAuthorRelation{.relation_name = "bookwithauthor"};
+    NbBookAuthorRelation nbBookAuthorRelation{};
     CreateNode(&nbBook);
     CreateRelation(&nbBook, &nbAuthor, &nbBookAuthorRelation);
+
+    // 创建出版社和这本书的关系,出版社出版了这本书
+    if (req->publisher_id != 0) {
+        NbBookPublisherRelation nbBookPublisherRelation;
+        NbPublisher nbPublisher{.ID = req->publisher_id};
+        CreateRelation(&nbBook, &nbPublisher, &nbBookPublisherRelation);
+    }
 
     // 输出契约
     if constexpr (enable_contract) {
@@ -89,8 +96,6 @@ JbBook* CreateBook(database db, JbBook* req) {
         }
     }
     return nullptr;
-
-    // 创建出版社和这本书的关系,出版社出版了这本书
 
     // 开始书的解析过程
     // return nullptr;
