@@ -266,7 +266,7 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
 
     template <class U, class... T>
     void getReturnStatement(U nodeOrRelation, T... nodeOrRelations) {
-        using nodeOrRelationType = U::value_type;
+        using nodeOrRelationType = typename U::value_type;
         if constexpr (node_concept<nodeOrRelationType>) {
             returnstatement += "n" + std::to_string(nodeReturnIndex) + ",";
             nodeReturnIndex++;
@@ -280,7 +280,7 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
 
     template <class U>
     void getReturnStatement(U nodeOrRelation) {
-        using nodeOrRelationType = U::value_type;
+        using nodeOrRelationType = typename U::value_type;
         if constexpr (node_concept<nodeOrRelationType>) {
             returnstatement += "n" + std::to_string(nodeReturnIndex) + ",";
             nodeReturnIndex++;
@@ -322,7 +322,7 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
 
     template <class U, class... T>
     void getMatchStatement(U nodeOrRelation, T... nodeOrRelations) {
-        using nodeOrRelationType = U::value_type;
+        using nodeOrRelationType = typename U::value_type;
         if constexpr (node_concept<nodeOrRelationType>) {
             matchstatement += "(n" + std::to_string(matchStatementIterNodeIndex) + ":" + nodeOrRelationType::node_name + ")" + ",";
             matchStatementIterNodeIndex++;
@@ -338,7 +338,7 @@ class neo4j_query : public std::enable_shared_from_this<neo4j_query> {
 
     template <class U>
     void getMatchStatement(U nodeOrRelation) {
-        using nodeOrRelationType = U::value_type;
+        using nodeOrRelationType = typename U::value_type;
         if constexpr (node_concept<nodeOrRelationType>) {
             matchstatement += "(n" + std::to_string(matchStatementIterNodeIndex) + ":" + nodeOrRelationType::node_name + ")" + ",";
             matchStatementIterNodeIndex++;

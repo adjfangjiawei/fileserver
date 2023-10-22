@@ -1,5 +1,7 @@
 #include <BookServer/book.h>
 #include <User/phoneNumber.h>
+#include <ffmpeg.h>
+#include <file.h>
 #include <gateway/gateway.h>
 #include <libconfig.h>
 #include <spdlog/spdlog.h>
@@ -11,12 +13,13 @@
 #include <odb/database.hxx>
 #include <odb/mysql/database.hxx>
 #include <odb/transaction.hxx>
-
 using database = std::shared_ptr<odb::mysql::database>;
 using transaction = odb::core::transaction;
 // 主函数
 int main(int argc, char* argv[]) {
     using namespace std;
+    // s3_utils::initAwsAPI();
+    ffmpeg_push_stream();
 
     // 添加编译的配置文件的选项
     CLI::App app{"a learning software"};

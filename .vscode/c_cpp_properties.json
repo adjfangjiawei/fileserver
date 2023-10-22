@@ -3,6 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
+                "/fileserverinclude",
                 "${workspaceFolder}/aws-sdk/Public",
                 "${workspaceFolder}/BookServer/Public",
                 "${workspaceFolder}/gateway/Public",
@@ -10,6 +11,7 @@
                 "${workspaceFolder}/Neo4j/Public",
                 "${workspaceFolder}/User/Public",
                 "/linux/include"
+               
                // "/mnt/m/linux/include",
             ],
             "defines": [],
