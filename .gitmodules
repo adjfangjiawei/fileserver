@@ -1,0 +1,3 @@
+[submodule "thirdparty/jbson"]
+	path = thirdparty/jbson
+	url = https://github.com/adjfangjiawei/jbson.git

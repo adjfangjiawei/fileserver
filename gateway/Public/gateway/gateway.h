@@ -10,5 +10,4 @@ class gateway {
   private:
     config_t config;
 };
-extern void clientMain();
 #endif

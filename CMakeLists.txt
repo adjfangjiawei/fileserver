@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12.0)
 set(CMAKE_TOOLCHAIN_FILE /mnt/m/fileservervcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
-set(CMAKE_FIND_DEBUG_MODE FALSE)
+# set(CMAKE_FIND_DEBUG_MODE FALSE)
 project(proxysever)
 include(cmake/CPM.cmake)
 set(CMAKE_PREFIX_PATH /linux)
@@ -23,6 +23,8 @@ include_directories(
 /fileserver/aws-sdk/Public
 /fileserver/util/Public
 /fileserver/User/Public
+/fileserver/thirdparty
+/linux/include
 # /fileserverinclude
 )
 aux_source_directory(util/Private util)
@@ -55,9 +57,7 @@ find_package(OpenCV REQUIRED)
 # find_package(absl REQUIRED)
 
 find_library(LibConfig config /linux/lib)
-target_include_directories(main PRIVATE ${FFMPEG_INCLUDE_DIRS})
-target_link_libraries(main ${FFMPEG_LIBRARIES})
-target_link_directories(main PRIVATE ${FFMPEG_LIBRARY_DIRS})
+
 # target_include_directories(
 # main
 # PRIVATE
@@ -79,6 +79,8 @@ target_link_libraries(main ${LibConfig})
 target_link_libraries(main fmt::fmt)
 target_link_libraries(main ${OpenCV_LIBRARIES})
 
-
+target_include_directories(main PRIVATE ${FFMPEG_INCLUDE_DIRS})
+target_link_libraries(main ${FFMPEG_LIBRARIES})
+target_link_directories(main PRIVATE ${FFMPEG_LIBRARY_DIRS})
 
 # target_link_libraries(main absl::base)

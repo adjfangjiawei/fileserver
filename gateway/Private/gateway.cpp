@@ -4,7 +4,6 @@
 #include <libconfig.h>
 #include <spdlog/spdlog.h>
 
-#include <BookServer/jb/book.hxx>
 #include <boost/asio/awaitable.hpp>
 #include <boost/asio/co_spawn.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -18,6 +17,7 @@
 #include <boost/url.hpp>
 #include <boost/url/parse.hpp>
 #include <iostream>
+#include <jbson/Book/book.hxx>
 #include <nlohmann/json.hpp>
 #include <odb/core.hxx>
 #include <odb/database.hxx>

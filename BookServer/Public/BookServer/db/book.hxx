@@ -2,7 +2,7 @@
 #include <unicode/ustring.h>
 #include <utils/util.h>
 
-#include <BookServer/jb/book.hxx>
+#include <jbson/Book/book.hxx>
 #include <odb/core.hxx>
 #include <string>
 // 书籍

@@ -2,7 +2,7 @@
 #define SERVER_BOOK_H
 #include <gateway/gateway.h>
 
-#include <BookServer/jb/book.hxx>
+#include <jbson/Book/book.hxx>
 #include <odb/database.hxx>
 #include <odb/mysql/database.hxx>
 #include <odb/transaction.hxx>

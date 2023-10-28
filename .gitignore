@@ -17,7 +17,7 @@ infer-out
 /_deps
 cpm-package-lock.cmake
 test/Makefile
-test/mytests
 /.cache
 /output
 test.mp4
+test/mytests

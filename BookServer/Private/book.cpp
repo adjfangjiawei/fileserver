@@ -5,7 +5,7 @@
 
 #include <BookServer/db/book-odb.hxx>
 #include <BookServer/db/nbook.hxx>
-#include <BookServer/jb/book.hxx>
+#include <jbson/Book/book.hxx>
 #include <odb/database.hxx>
 #include <odb/mysql/database.hxx>
 #include <odb/transaction.hxx>
