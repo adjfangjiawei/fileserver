@@ -1,0 +1,10 @@
+/fjw/fileserver/Build/CMakeFiles/edit_cache.dir
+/fjw/fileserver/Build/CMakeFiles/rebuild_cache.dir
+/fjw/fileserver/Build/Source/Utils/CMakeFiles/Utils.dir
+/fjw/fileserver/Build/Source/Utils/CMakeFiles/edit_cache.dir
+/fjw/fileserver/Build/Source/Utils/CMakeFiles/rebuild_cache.dir
+/fjw/fileserver/Build/Source/FileServer/CMakeFiles/edit_cache.dir
+/fjw/fileserver/Build/Source/FileServer/CMakeFiles/rebuild_cache.dir
+/fjw/fileserver/Build/Cmd/CMakeFiles/fileserver.dir
+/fjw/fileserver/Build/Cmd/CMakeFiles/edit_cache.dir
+/fjw/fileserver/Build/Cmd/CMakeFiles/rebuild_cache.dir

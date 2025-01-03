@@ -1,0 +1,10 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build",
+            "command": "${workspaceFolder}/BuildScript/Build.sh",
+        
+        }
+    ]
+}

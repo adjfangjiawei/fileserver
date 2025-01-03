@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.12.0)
-set(CMAKE_TOOLCHAIN_FILE /mnt/m/fileservervcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(CMAKE_TOOLCHAIN_FILE /fjw/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 # set(CMAKE_FIND_DEBUG_MODE FALSE)
-project(FileServer LANGUAGES C++)
+project(FileServer LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_subdirectory(Source/Utils)
+add_subdirectory(Source/FileServer)
+add_subdirectory(Cmd)
 
 # include(cmake/CPM.cmake)
 # set(CMAKE_PREFIX_PATH /linux)
