@@ -141,7 +141,7 @@
     // "--function-arg-placeholders=false",
     // compelie_commands.json 文件的目录位置(相对于工作区，由于 CMake 生成的该文件默认在 Build 文件夹中，故设置为 Build)
     "--compile-commands-dir=Build",
-    "--query-driver=/usr/bin/c++,/usr/bin/cc"
+    "--query-driver=/usr/bin/g++,/usr/bin/gcc"
   ],
   "clang-format.executable": "clang-format-20",
   "testMate.cpp.test.executables": "${workspaceFolder}/NewBuild/bin/*",
@@ -150,7 +150,7 @@
   "mlir.tablegen_compilation_databases": [
     "BuildAllElementDebug/Build/tablegen_compile_commands.yml"
   ],
-  "cmake.sourceDirectory": "/mnt/e/linuxlibrary/llvm-project/llvm",
+  "cmake.sourceDirectory": "/fjw/fileserver",
   "cmake.configureArgs": [
     "-S llvm",
     "-B BuildAllElementDebug/Build",

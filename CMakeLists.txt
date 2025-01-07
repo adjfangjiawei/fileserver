@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.12.0)
 set(CMAKE_TOOLCHAIN_FILE /fjw/vcpkg/scripts/buildsystems/vcpkg.cmake)
+set(VCPKG_HOST_TRIPLET "x64-linux-dynamic")
+set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
 
+set(VCPKG_MANIFEST_MODE OFF)
 # set(CMAKE_FIND_DEBUG_MODE FALSE)
 project(FileServer LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
+set(CMAKE_CXX_STANDARD 23)
 add_subdirectory(Source/Utils)
+add_subdirectory(Source/ThirdParty/BookflavorInterface)
 add_subdirectory(Source/FileServer)
 add_subdirectory(Cmd)
 

@@ -1,14 +1,17 @@
 {
-    "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Launch",
-            "program": "${workspaceFolder}/Build/Cmd/fileserver",
-            "args": ["-c","/fileserver/config/config.cfg"],
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": "build"
-        }
-    ],
-    "version": "2.0.0"
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Launch",
+      "program": "${workspaceFolder}/Build/Cmd/fileservercmd",
+      "args": [
+        "-c",
+        "Config/Config.cfg"
+      ],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "build"
+    }
+  ],
+  "version": "2.0.0"
 }

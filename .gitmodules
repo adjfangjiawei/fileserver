@@ -1,3 +1,6 @@
 [submodule "thirdparty/jbson"]
 	path = thirdparty/jbson
 	url = https://github.com/adjfangjiawei/jbson.git
+[submodule "Source/ThirdParty/BookflavorInterface"]
+	path = Source/ThirdParty/BookflavorInterface
+	url = git@github.com:adjfangjiawei/BookflavorInterface.git

@@ -13,19 +13,21 @@
 #include <vector>
 
 namespace S3Utils {
-    void initAwsAPI(bool shutdown = false);
+    void InitAwsAPI(bool shutdown = false);
 
-    class MinioClient {
-        std::shared_ptr<Aws::S3::S3Client> client_;
+    class S3Client {
+        std::shared_ptr<Aws::S3::S3Client> Client;
 
       public:
-        MinioClient(const std::string &endpoint, const std::string &accessKey, const std::string &secretKey);
+        S3Client(const std::string &endpoint, const std::string &accessKey, const std::string &secretKey);
 
-        ~MinioClient() { client_.reset(); }
+        ~S3Client() {}
+
+        void CreateBucket(const std::string &bucketName);
 
         // bool upload(const cv::Mat &img, const std::string &bucketName, const std::string &objectKey, const std::vector<int> &vecCompression_params = {});
 
-        bool upload(const std::string &contents, const std::string &bucketName, const std::string &objectKey);
+        bool UploadFile(const std::string &contents, const std::string &bucketName, const std::string &objectKey);
 
         std::string download(const std::string &bucketName, const std::string &objectKey);
 

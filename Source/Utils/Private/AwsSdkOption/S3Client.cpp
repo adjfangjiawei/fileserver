@@ -1,31 +1,52 @@
-#include <Utils/AwsSdkOption/file.h>
+#include <Utils/AwsSdkOption/S3Client.h>
+#include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
+#include <aws/core/utils/logging/AWSLogging.h>
+#include <aws/core/utils/logging/DefaultLogSystem.h>
+#include <aws/core/utils/logging/LogLevel.h>
+#include <aws/core/utils/logging/LogMacros.h>
+#include <aws/s3/S3ServiceClientModel.h>
+#include <aws/s3/model/CreateBucketConfiguration.h>
+#include <aws/s3/model/CreateBucketRequest.h>
 #include <aws/s3/model/GetObjectRequest.h>
 #include <aws/s3/model/PutObjectRequest.h>
+
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+#include <spdlog/spdlog.h>
 
 #undef GetObject
 #undef GetMessage
 namespace S3Utils {
-    void initAwsAPI(bool shutdown) {
+    void InitAwsAPI(bool shutdown) {
         static bool isInited = false;
         static Aws::SDKOptions options;
+        options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Trace;
         if (not isInited && not shutdown) {
             Aws::InitAPI(options);
+            // 使用自定义日志系统
+            auto logger = Aws::MakeShared<Aws::Utils::Logging::DefaultLogSystem>("MyAwsLogger",                         // 日志分配标签
+                                                                                 Aws::Utils::Logging::LogLevel::Trace,  // 日志级别
+                                                                                 "Log/aws_sdk.log"                      // 日志文件路径
+            );
+            Aws::Utils::Logging::InitializeAWSLogging(logger);
+            AWS_LOGSTREAM_INFO("MyAwsLogger", "Testing AWS logging to file");
             isInited = true;
         } else if (isInited && shutdown) {
+            Aws::Utils::Logging::ShutdownAWSLogging();
             Aws::ShutdownAPI(options);
             isInited = false;
         }
     }
 
-    MinioClient::MinioClient(const std::string &endpoint, const std::string &accessKey, const std::string &secretKey) {
-        initAwsAPI();
+    S3Client::S3Client(const std::string &endpoint, const std::string &accessKey, const std::string &secretKey) {
+        InitAwsAPI();
         Aws::Client::ClientConfiguration cfg;
+
         cfg.endpointOverride = endpoint;  // S3服务器地址和端口
         // INFO("endpoint %s access_key %s secret_key %s", endpoint.c_str(), accessKey.c_str(), secretKey.c_str());
-        cfg.scheme = Aws::Http::Scheme::HTTP;
+        cfg.scheme = Aws::Http::Scheme::HTTPS;
         cfg.verifySSL = false;
-        client_ = std::make_shared<Aws::S3::S3Client>(Aws::Auth::AWSCredentials(accessKey, secretKey), cfg, Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, false);
+        Client = std::make_shared<Aws::S3::S3Client>(Aws::Auth::AWSCredentials(accessKey, secretKey), cfg, Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, false);
     }
 
     // bool MinioClient::upload(const cv::Mat &img, const std::string &bucketName, const std::string &objectKey, const std::vector<int> &vecCompression_params) {
@@ -44,24 +65,34 @@ namespace S3Utils {
     //     return true;
     // }
 
-    bool MinioClient::upload(const std::string &contents, const std::string &bucketName, const std::string &objectKey) {
+    bool S3Client::UploadFile(const std::string &contents, const std::string &bucketName, const std::string &objectKey) {
         Aws::S3::Model::PutObjectRequest putObjectRequest;
         putObjectRequest.WithBucket(bucketName).WithKey(objectKey);
         auto contents_stream = Aws::MakeShared<Aws::StringStream>("PutObjectInputStream", contents);
         putObjectRequest.SetBody(contents_stream);
-        auto putObjectResult = client_->PutObject(putObjectRequest);
+        auto putObjectResult = Client->PutObject(putObjectRequest);
         if (not putObjectResult.IsSuccess()) {
             // INFO(putObjectResult.GetError().GetMessage().c_str());
+            SPDLOG_ERROR("Failed to upload file: {}", putObjectResult.GetError().GetMessage().c_str());
             return false;
         }
         return true;
     }
 
-    std::string MinioClient::download(const std::string &bucketName, const std::string &objectKey) {
+    void S3Client::CreateBucket(const std::string &bucketName) {
+        Aws::S3::Model::CreateBucketRequest createBucketRequest;
+        createBucketRequest.SetBucket(bucketName);
+        auto outCome = this->Client->CreateBucket(createBucketRequest);
+        if (not outCome.IsSuccess()) {
+            SPDLOG_ERROR("Failed to create bucket: {}", outCome.GetError().GetMessage().c_str());
+        }
+    }
+
+    std::string S3Client::download(const std::string &bucketName, const std::string &objectKey) {
         // INFO("bucket: %s dir: %s", bucketName.c_str(), objectKey.c_str());
         Aws::S3::Model::GetObjectRequest object_request;
         object_request.WithBucket(bucketName).WithKey(objectKey);
-        auto get_object_outcome = client_->GetObject(object_request);
+        auto get_object_outcome = Client->GetObject(object_request);
         if (get_object_outcome.IsSuccess()) {
             std::ostringstream tmp;
             tmp << get_object_outcome.GetResult().GetBody().rdbuf();
