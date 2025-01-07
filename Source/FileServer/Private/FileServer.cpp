@@ -3,19 +3,28 @@
 #include <Proto/FileServer/Service.pb.h>
 #include <Utils/IncludeRequire/GlobalRequire.h>
 #include <spdlog/spdlog.h>
+#include <unistd.h>
 
 #include <memory>
+#include <mutex>
+#include <orm/exceptions/runtimeerror.hpp>
+#include <orm/exceptions/sqlerror.hpp>
+#include <string>
+#include <thread>
 
 #include "ConnectToS3Client.h"
 #include "ConnectToSqlDb.h"
 #include "FileServerMysqlDb.h"
 #include "Proto/FileServer/FileOperation.pb.h"
 #include "Utils/AwsSdkOption/S3Client.h"
+#include "Utils/Sql/TinyOrmHelperFunction.h"
 
 namespace FileServer {
 
     struct FileServerMetadata {
-        std::shared_ptr<S3Utils::S3Client> S3Client;
+        std::shared_ptr<S3Utils::S3Client> S3Client = nullptr;
+        std::shared_ptr<Orm::DatabaseManager> dbManager = nullptr;
+        QVariantHash sqlConfig;
     };
 
     class FileServerService : public FileServer::FileService {
@@ -27,10 +36,12 @@ namespace FileServer {
                                           ::FileServer::CreateFileOperationsResponse* response,
                                           ::google::protobuf::Closure* done) override {
             brpc::ClosureGuard doneGuard(done);
+
             spdlog::info("CreateFileOperations called");
-            FileOperationRecord dbFileOperationRecord;
 
             for (auto fileOperation : request->file_operations()) {
+                std::string connectionName = GetConnection(metadata.dbManager, metadata.sqlConfig);
+                FileOperationRecord dbFileOperationRecord = FileOperationRecord::instance(connectionName.c_str());
                 if (fileOperation.file_operation_type() ==
                     ::FileServer::FileOperation::FileOperationType::
                         FileOperation_FileOperationType_FILE_OPERATION_TYPE_UNSPECIFIED) {
@@ -105,16 +116,54 @@ namespace FileServer {
                     }
                     dbFileOperationRecord.setAttribute("download_method", newDownloadPolicy.download_method());
                 }
-                dbFileOperationRecord.save();
+
+                try {
+                    dbFileOperationRecord.save();
+                } catch (Orm::Exceptions::InvalidArgumentError& e) {
+                    spdlog::error("Failed to save file operation record: {}", e.what());
+
+                } catch (Orm::Exceptions::SqlError& e) {
+                    spdlog::error("Failed to save file operation record: {}", e.what());
+                }
+            }
+        }
+
+        virtual void CreateFileShards(::google::protobuf::RpcController* controller,
+                                      const ::FileServer::CreateFileShardsRequest* request,
+                                      ::FileServer::CreateFileShardsResponse* response,
+                                      ::google::protobuf::Closure* done) override {
+            brpc::ClosureGuard doneGuard(done);
+            spdlog::info("CreateFileOperations called");
+
+            for (auto fileShard : request->file_shards()) {
+                if (fileShard.shard_md5() == "") {
+                    spdlog::error("Shard md5 is empty");
+                    return;
+                }
+                if (fileShard.shard_size() == 0) {
+                    spdlog::error("Shard size is zero");
+                    return;
+                }
+                if (fileShard.file_operation_id() == 0) {
+                    spdlog::error("File operation id is zero");
+                    return;
+                }
+                if (fileShard.s3_uploadordownload_id() == 0) {
+                    spdlog::error("S3 upload id is zero");
+                    return;
+                }
             }
         }
 
         FileServerMetadata metadata;
     };
 
-    void InitRpcServer(const libconfig::Config* config) {
+    void InitRpcServer(const libconfig::Config* config, std::shared_ptr<Orm::DatabaseManager>& dbManager,
+                       QVariantHash& sqlConfig) {
         brpc::Server server;
         FileServerService service;
+        service.metadata.dbManager = dbManager;
+        service.metadata.sqlConfig = sqlConfig;
         InitS3Client(config, service.metadata.S3Client);
         server.AddService(&service, brpc::SERVER_DOESNT_OWN_SERVICE);
         brpc::ServerOptions options;
@@ -124,7 +173,9 @@ namespace FileServer {
     }
 
     void InitPkg(const libconfig::Config* config) {
-        InitSql(config);
-        InitRpcServer(config);
+        std::shared_ptr<Orm::DatabaseManager> dbManager;
+        QVariantHash sqlConfig;
+        InitSql(config, dbManager, sqlConfig);
+        InitRpcServer(config, dbManager, sqlConfig);
     }
 }  // namespace FileServer

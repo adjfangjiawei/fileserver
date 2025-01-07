@@ -13,3 +13,7 @@ target_link_libraries(Utils PRIVATE ${AWSSDK_LIBRARIES})
 
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(Utils PRIVATE spdlog::spdlog)
+
+# 连接Qt
+# find_package(Qt REQUIRED)
+# target_link_libraries(Utils PRIVATE Qt::Core Qt::Network Qt::Widgets)

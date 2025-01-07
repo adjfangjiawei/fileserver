@@ -31,3 +31,5 @@
 
 // std
 #include <memory>
+
+using namespace std::string_literals;
