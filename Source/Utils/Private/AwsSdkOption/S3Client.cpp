@@ -1,15 +1,22 @@
 #include <Utils/AwsSdkOption/S3Client.h>
+#include <aws/auth/credentials.h>
 #include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
 #include <aws/core/utils/logging/AWSLogging.h>
 #include <aws/core/utils/logging/DefaultLogSystem.h>
 #include <aws/core/utils/logging/LogLevel.h>
 #include <aws/core/utils/logging/LogMacros.h>
+#include <aws/core/utils/memory/stl/AWSStreamFwd.h>
+#include <aws/s3/S3Client.h>
 #include <aws/s3/S3ServiceClientModel.h>
 #include <aws/s3/model/CreateBucketConfiguration.h>
 #include <aws/s3/model/CreateBucketRequest.h>
 #include <aws/s3/model/GetObjectRequest.h>
 #include <aws/s3/model/PutObjectRequest.h>
+
+// #include <fstream>
+#include <iostream>
+#include <memory>
 
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #include <spdlog/spdlog.h>
@@ -20,7 +27,7 @@ namespace S3Utils {
     void InitAwsAPI(bool shutdown) {
         static bool isInited = false;
         static Aws::SDKOptions options;
-        options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Trace;
+        options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Off;
         if (not isInited && not shutdown) {
             Aws::InitAPI(options);
             // 使用自定义日志系统
@@ -119,15 +126,6 @@ namespace S3Utils {
     //         return {};
     //     }
     // }
-
-#include <aws/auth/credentials.h>
-#include <aws/core/utils/memory/stl/AWSStreamFwd.h>
-#include <aws/s3/S3Client.h>
-#include <aws/s3/model/PutObjectRequest.h>
-
-// #include <fstream>
-#include <iostream>
-#include <memory>
 
     // #include "../Public/file.h"
     void InitS3Client(Aws::Utils::Logging::LogLevel logLevel) {

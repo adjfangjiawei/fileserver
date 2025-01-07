@@ -20,3 +20,13 @@ class FlightAA final : public Orm::Tiny::Model<FlightAA>, public Orm::Tiny::Soft
     QString u_table{"flightsaa"};
     QString u_primaryKey{"id"};
 };
+
+class FileOperationRecord final : public Orm::Tiny::Model<FileOperationRecord>, public Orm::Tiny::SoftDeletes<FileOperationRecord> {
+    friend Model;
+
+    using Model::Model;
+
+  private:
+    QString u_table{"file_operation_record"};
+    QString u_primaryKey{"id"};
+};

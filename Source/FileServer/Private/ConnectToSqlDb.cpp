@@ -1,5 +1,7 @@
 #include "ConnectToSqlDb.h"
 
+#include <orm/schema.hpp>
+
 #include "FileServerMysqlDb.h"
 void InitSql(const libconfig::Config* config) {
     std::string mysqlHost;
@@ -64,5 +66,26 @@ void InitSql(const libconfig::Config* config) {
             table.softDeletes();
             table.timestamps();
         });
+    }
+
+    if (!Orm::Schema::hasTable("file_operation_record")) {
+        Orm::Schema::create("file_operation_record", [](Orm::SchemaNs::Blueprint& table) {
+            table.id();
+            table.softDeletes();
+            table.timestamps();
+            table.integer("s3_upload_id").index();
+            table.string("file_name");
+            table.string("file_path");
+            table.string("file_sample_md5");
+            table.tinyInteger("file_operation_type");
+            table.tinyInteger("file_operation_status");
+            table.tinyInteger("upload_file_server_type");
+            table.tinyInteger("download_file_server_type");
+            table.tinyInteger("is_permanent");
+            table.tinyInteger("upload_method");
+            table.tinyInteger("download_method");
+        });
+    } else {
+        Orm::Schema::table("file_operation_record", [](Orm::SchemaNs::Blueprint& table) { auto columns = table.getColumns(); });
     }
 }
